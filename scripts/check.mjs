@@ -125,7 +125,19 @@ const browser = await chromium.launch({ channel: process.env.PW_CHANNEL || 'msed
   check('changes: every word buyers scan for is on the page', cl.missing.length === 0, cl.missing.join(', '));
   check('changes: story decision is not printed twice (F2)', cl.doubled <= 2, `${cl.doubled} copies incl. Command log`);
   check('changes: title names operations, supply chain and security (F12)', /supply chain and security/.test(cl.title), cl.title);
-  check('changes: footer has Substack and Karachi, Pakistan (F10)', /Substack/.test(cl.footer) && /Karachi, Pakistan/.test(cl.footer));
+  // System parts open their cards
+  await page.evaluate(() => document.querySelector('.sys__figure').scrollIntoView());
+  await page.waitForTimeout(900);
+  await page.locator('.sys__svg--wide [data-node="erp"]').hover();
+  await page.waitForTimeout(500);
+  const sys = await page.evaluate(() => ({
+    open: [...document.querySelectorAll('.sys__card')].filter((c) => !c.hidden).map((c) => c.dataset.card).join(','),
+    lit: document.querySelectorAll('.sys__link.is-lit').length,
+    nodes: document.querySelectorAll('.sys__svg--wide .sys__node').length,
+  }));
+  check('system: ten parts, hovering ERP opens its card and lights its line', sys.nodes === 10 && sys.open === 'erp' && sys.lit >= 1, JSON.stringify(sys));
+  await page.keyboard.press('Escape');
+  check('footer: LinkedIn and Karachi, Pakistan, no Substack', !/Substack/.test(cl.footer) && /LinkedIn/.test(cl.footer) && /Karachi, Pakistan/.test(cl.footer));
   for (const p of ['occuralog', 'command', 'echo']) {
     const r = await page.goto(new URL('/' + p, base).href, { waitUntil: 'networkidle' });
     const ok = await page.evaluate(() => document.querySelectorAll('.pp__block').length === 3 && !document.querySelector('.prod__more'));

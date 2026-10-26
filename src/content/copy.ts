@@ -15,7 +15,7 @@ export const links = {
   // organisation URL here when it does.
   github: '',
   linkedin: 'https://www.linkedin.com/company/occurisai/',
-  substack: 'https://kashaf00.substack.com/',
+  substack: '', // removed from the footer on request
 };
 
 export const tagline =
@@ -145,6 +145,92 @@ export const system = {
   outputs: ['Alerts', 'Approvals', 'Reports'],
   frame: 'YOUR SERVERS',
   note: 'Each part works alone. Together they close the loop between a message and a decision.',
+  hint: 'Hover or tap any part to see what it does.',
+  close: 'Close',
+  rows: { what: 'What', when: 'When', how: 'How', why: 'Why' },
+  // One card per part of the diagram, in the order it is drawn
+  cards: {
+    whatsapp: {
+      title: 'WhatsApp',
+      kind: 'Where the news starts',
+      what: 'Dispatch, drivers, port agents and suppliers post updates in groups, in Roman Urdu and English.',
+      when: 'All day, the moment something happens.',
+      how: 'Occuralog reads the group export as it is. Nobody changes how they type.',
+      why: 'It is where the first sign of a delay shows up, hours before anyone else knows.',
+    },
+    spreadsheets: {
+      title: 'Spreadsheets',
+      kind: 'What the office believes',
+      what: 'Stock sheets, price lists and order trackers kept by hand.',
+      when: 'Whenever someone remembers to update them.',
+      how: 'Read next to the messages, so a number that has gone stale gets caught.',
+      why: 'The sheet says 230 cartons. The store says 30.',
+    },
+    email: {
+      title: 'Email',
+      kind: 'Where commitments hide',
+      what: 'Supplier threads: revised lead times, confirmations, price changes.',
+      when: 'In long threads nobody re-reads.',
+      how: 'Connected for each client, on your own servers.',
+      why: 'The new lead time is in reply number four of a thread called Re: Re: Re:.',
+    },
+    erp: {
+      title: 'ERP',
+      kind: 'The system of record',
+      what: 'Orders, stock and bills of materials in SAP, Tally or your own system.',
+      when: 'On its own schedule, often a day behind.',
+      how: 'Read-only exports, connected for each client. Nothing is written back without a person.',
+      why: 'It is the truth on paper. The messages say what is true today.',
+    },
+    occuralog: {
+      title: 'Occuralog',
+      kind: 'Messages to records',
+      what: 'Turns each message into a timestamped record: item, quantity, vehicle, ETA, delay.',
+      when: 'As each message lands.',
+      how: 'Rules first. A message the rules cannot place is marked unknown, never guessed.',
+      why: 'Nobody re-types a WhatsApp message into a system, so until now it never got there.',
+    },
+    command: {
+      title: 'Command',
+      kind: 'Records to decisions',
+      what: 'Six agents watch procurement, inventory, supplier risk, compliance, forecasting and reporting.',
+      when: 'Around the clock.',
+      how: 'Each record is checked against your stock, your bill of materials and what happened before.',
+      why: 'The customs hold is flagged four days before the line stops, not on the day.',
+    },
+    echo: {
+      title: 'Echo',
+      kind: 'Decisions to actions, by voice',
+      what: 'Acts on a decision from one spoken sentence, across email, calendar, Slack and sheets.',
+      when: 'When your hands are full, or a screen is hard to use.',
+      how: 'Asks before anything irreversible, then says exactly what happened.',
+      why: 'Approving a reorder should take one sentence, not ten clicks.',
+    },
+    alerts: {
+      title: 'Alerts',
+      kind: 'What needs you now',
+      what: 'A customs hold, a stock-out coming, a price that jumped.',
+      when: 'As soon as an agent sees it.',
+      how: 'Each alert carries the message that caused it, so you can check it in a second.',
+      why: 'You act days early instead of after the line stops.',
+    },
+    approvals: {
+      title: 'Approvals',
+      kind: 'Your yes, then it happens',
+      what: 'Reorders, supplier replies and changes drafted and waiting for a person.',
+      when: 'Whenever a decision needs someone in charge.',
+      how: 'Nothing is sent without your approval, by tap or by voice.',
+      why: 'You stay in charge of every action Occuris takes.',
+    },
+    reports: {
+      title: 'Reports',
+      kind: 'The day, written down',
+      what: 'The day’s records and decisions in one place.',
+      when: 'Every evening, or whenever you ask.',
+      how: 'Built from the log, with every line pointing back to its message.',
+      why: 'An audit trail nobody had to write.',
+    },
+  },
   diagramLabel:
     'WhatsApp, spreadsheets, email and ERP flow into Occuralog, which turns messages into records; Command turns records into decisions; Echo turns decisions into actions by voice. Out come alerts, approvals and reports. All of it sits inside your servers.',
 };

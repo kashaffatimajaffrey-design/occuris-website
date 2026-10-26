@@ -506,6 +506,125 @@ if (strip) {
   }
 }
 
+// ---------- System: every part opens a card that shows what it does ----------
+
+const sysFig = $('[data-system]');
+if (sysFig) {
+  const cards = new Map($$('[data-card]', sysFig).map((c) => [c.dataset.card!, c]));
+  const nodes = [...sysFig.querySelectorAll<SVGGElement>('.sys__node')];
+  const links = [...sysFig.querySelectorAll<SVGPathElement>('.sys__link')];
+  const wide = matchMedia('(min-width: 960px)');
+  let open: string | null = null;
+  let pinned = false;
+  let closeT = 0;
+
+  // Parts joined to `key` by a line light up with it
+  const near = (key: string) => {
+    const s = new Set<string>();
+    for (const l of links) {
+      if (l.dataset.a === key) s.add(l.dataset.b!);
+      if (l.dataset.b === key) s.add(l.dataset.a!);
+    }
+    return s;
+  };
+
+  const place = (card: HTMLElement, node: Element) => {
+    if (!wide.matches) return; // phones: the card is a sheet from the bottom
+    const f = sysFig.getBoundingClientRect();
+    const r = node.getBoundingClientRect();
+    const w = card.offsetWidth || 320;
+    const cx = r.left + r.width / 2 - f.left;
+    let left: number;
+    let top: number;
+    if (node.classList.contains('sys__pill')) {
+      // inputs open to the right, outputs to the left, level with the pill
+      left = cx < f.width / 2 ? r.right - f.left + 16 : r.left - f.left - w - 16;
+      top = r.top - f.top - 40;
+      card.style.setProperty('--ox', cx < f.width / 2 ? '0%' : '100%');
+      card.style.setProperty('--oy', '20%');
+    } else {
+      left = cx - w / 2;
+      top = r.bottom - f.top + 14;
+      card.style.setProperty('--ox', '50%');
+      card.style.setProperty('--oy', '0%');
+    }
+    card.style.left = `${Math.max(-8, Math.min(left, f.width - w + 8))}px`;
+    card.style.top = `${Math.max(-60, top)}px`;
+  };
+
+  const show = (key: string, node: Element, pin = false) => {
+    clearTimeout(closeT);
+    if (open && open !== key) cards.get(open)!.hidden = true;
+    open = key;
+    pinned = pin || pinned;
+    const card = cards.get(key)!;
+    const wasHidden = card.hidden;
+    card.hidden = false;
+    if (wasHidden) {
+      // restart the card's little story each time it opens
+      card.style.animation = 'none';
+      void card.offsetWidth;
+      card.style.animation = '';
+    }
+    const n = near(key);
+    sysFig.classList.add('is-focus');
+    for (const g of nodes) {
+      const k = g.dataset.node!;
+      g.classList.toggle('is-on', k === key);
+      g.classList.toggle('is-near', n.has(k));
+      g.setAttribute('aria-expanded', String(k === key));
+    }
+    for (const l of links) l.classList.toggle('is-lit', l.dataset.a === key || l.dataset.b === key);
+    place(card, node);
+  };
+
+  const hide = () => {
+    clearTimeout(closeT);
+    if (open) cards.get(open)!.hidden = true;
+    open = null;
+    pinned = false;
+    sysFig.classList.remove('is-focus');
+    for (const g of nodes) {
+      g.classList.remove('is-on', 'is-near');
+      g.setAttribute('aria-expanded', 'false');
+    }
+    for (const l of links) l.classList.remove('is-lit');
+  };
+  const later = () => {
+    clearTimeout(closeT);
+    if (!pinned) closeT = window.setTimeout(hide, 180);
+  };
+
+  for (const g of nodes) {
+    const key = g.dataset.node!;
+    g.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && show(key, g));
+    g.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && later());
+    g.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (open === key && pinned) hide();
+      else show(key, g, true);
+    });
+    g.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (open === key && pinned) hide();
+        else show(key, g, true);
+      }
+    });
+    g.addEventListener('focus', () => show(key, g));
+    g.addEventListener('blur', later);
+  }
+  for (const card of cards.values()) {
+    card.addEventListener('pointerenter', () => clearTimeout(closeT));
+    card.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && later());
+    card.addEventListener('click', (e) => e.stopPropagation());
+  }
+  $$('[data-card-close]', sysFig).forEach((b) => b.addEventListener('click', hide));
+  document.addEventListener('click', () => open && hide());
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && open && hide());
+  addEventListener('resize', () => open && hide());
+}
+
 // ---------- Echo: listen, the sentence lands, then what Echo did ----------
 
 const echoCard = $('[data-echo]');
