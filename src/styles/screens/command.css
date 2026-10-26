@@ -14,9 +14,20 @@
 }
 
 /* ---------- the diagram ---------- */
+.cmd__fig {
+  position: relative;
+  margin: var(--s6) 0 0;
+}
 .cmd__diagram {
-  margin-top: var(--s6);
   width: 100%;
+}
+.cmd__hint {
+  margin-top: var(--s2);
+  font-family: var(--font-mono);
+  font-size: var(--t-micro);
+  color: var(--mist);
+  opacity: 0.7;
+  text-align: center;
 }
 .flow {
   display: block;
@@ -37,17 +48,74 @@
   stroke: var(--amber);
   stroke-opacity: 0.7;
 }
-.flow .pk--in {
+/* the tiny trucks: violet with a pale cab, amber when their agent raises something */
+.flow .tk__cargo {
   fill: var(--violet);
 }
-.flow .pk--core {
-  fill: var(--mist);
-}
-.flow .pk--out {
+.flow .tk__cab {
   fill: var(--paper);
 }
-.flow .pk--amber {
+.flow .tk__wheel {
+  fill: var(--night);
+  stroke: var(--mist);
+  stroke-width: 0.6;
+}
+.flow .tk--out .tk__cargo {
+  fill: var(--mist);
+}
+.flow .tk--amber .tk__cargo,
+.flow .tk--amber .tk__cab {
   fill: var(--amber);
+}
+.flow .tk {
+  transition: opacity 250ms;
+}
+
+/* every part answers the pointer */
+.flow .node {
+  cursor: pointer;
+  outline: none;
+}
+.flow .core__hit {
+  fill: transparent;
+}
+.flow .node rect {
+  transition:
+    stroke 200ms,
+    stroke-opacity 200ms,
+    fill 200ms;
+}
+.flow .node:hover rect,
+.flow .node:focus-visible rect,
+.flow .node.is-on rect {
+  stroke: var(--violet);
+  stroke-opacity: 1;
+  stroke-width: 2;
+  fill: color-mix(in srgb, var(--violet) 22%, var(--night));
+}
+.flow .node--core:hover .core__ring,
+.flow .node--core.is-on .core__ring {
+  stroke-width: 10;
+}
+.flow .node,
+.flow .edge {
+  transition: opacity 250ms;
+}
+/* with a part open, everything not joined to it steps back */
+.cmd__fig.is-focus .flow .node:not(.is-on):not(.is-near) {
+  opacity: 0.3;
+}
+.cmd__fig.is-focus .flow .edge {
+  opacity: 0.25;
+}
+.cmd__fig.is-focus .flow .edge.is-lit {
+  opacity: 1;
+  stroke: var(--violet);
+  stroke-opacity: 0.9;
+  stroke-width: 2;
+}
+.cmd__fig.is-focus .flow .tk {
+  opacity: 0.35;
 }
 .flow .node rect {
   fill: var(--night);

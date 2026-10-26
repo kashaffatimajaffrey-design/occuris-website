@@ -506,13 +506,16 @@ if (strip) {
   }
 }
 
-// ---------- System: every part opens a card that shows what it does ----------
+// ---------- System and Command: every part opens a card that shows what it does ----------
 
-const sysFig = $('[data-system]');
-if (sysFig) {
-  const cards = new Map($$('[data-card]', sysFig).map((c) => [c.dataset.card!, c]));
-  const nodes = [...sysFig.querySelectorAll<SVGGElement>('.sys__node')];
-  const links = [...sysFig.querySelectorAll<SVGPathElement>('.sys__link')];
+type Side = 'left' | 'right' | 'below';
+
+// Parts are found when used, not up front: the Command drawing is rebuilt
+// when the screen turns between wide and narrow.
+function wireCards(fig: HTMLElement, side: (node: Element, x: number, width: number) => Side) {
+  const cards = new Map($$('[data-card]', fig).map((c) => [c.dataset.card!, c]));
+  const nodes = () => [...fig.querySelectorAll<SVGGElement>('[data-node]')];
+  const links = () => [...fig.querySelectorAll<SVGPathElement>('[data-a]')];
   const wide = matchMedia('(min-width: 960px)');
   let open: string | null = null;
   let pinned = false;
@@ -521,7 +524,7 @@ if (sysFig) {
   // Parts joined to `key` by a line light up with it
   const near = (key: string) => {
     const s = new Set<string>();
-    for (const l of links) {
+    for (const l of links()) {
       if (l.dataset.a === key) s.add(l.dataset.b!);
       if (l.dataset.b === key) s.add(l.dataset.a!);
     }
@@ -530,17 +533,18 @@ if (sysFig) {
 
   const place = (card: HTMLElement, node: Element) => {
     if (!wide.matches) return; // phones: the card is a sheet from the bottom
-    const f = sysFig.getBoundingClientRect();
+    const f = fig.getBoundingClientRect();
     const r = node.getBoundingClientRect();
     const w = card.offsetWidth || 320;
     const cx = r.left + r.width / 2 - f.left;
+    const where = side(node, cx, f.width);
     let left: number;
     let top: number;
-    if (node.classList.contains('sys__pill')) {
-      // inputs open to the right, outputs to the left, level with the pill
-      left = cx < f.width / 2 ? r.right - f.left + 16 : r.left - f.left - w - 16;
+    if (where !== 'below') {
+      // open beside the part, level with it
+      left = where === 'right' ? r.right - f.left + 16 : r.left - f.left - w - 16;
       top = r.top - f.top - 40;
-      card.style.setProperty('--ox', cx < f.width / 2 ? '0%' : '100%');
+      card.style.setProperty('--ox', where === 'right' ? '0%' : '100%');
       card.style.setProperty('--oy', '20%');
     } else {
       left = cx - w / 2;
@@ -557,7 +561,8 @@ if (sysFig) {
     if (open && open !== key) cards.get(open)!.hidden = true;
     open = key;
     pinned = pin || pinned;
-    const card = cards.get(key)!;
+    const card = cards.get(key);
+    if (!card) return;
     const wasHidden = card.hidden;
     card.hidden = false;
     if (wasHidden) {
@@ -567,14 +572,14 @@ if (sysFig) {
       card.style.animation = '';
     }
     const n = near(key);
-    sysFig.classList.add('is-focus');
-    for (const g of nodes) {
+    fig.classList.add('is-focus');
+    for (const g of nodes()) {
       const k = g.dataset.node!;
       g.classList.toggle('is-on', k === key);
       g.classList.toggle('is-near', n.has(k));
       g.setAttribute('aria-expanded', String(k === key));
     }
-    for (const l of links) l.classList.toggle('is-lit', l.dataset.a === key || l.dataset.b === key);
+    for (const l of links()) l.classList.toggle('is-lit', l.dataset.a === key || l.dataset.b === key);
     place(card, node);
   };
 
@@ -583,46 +588,260 @@ if (sysFig) {
     if (open) cards.get(open)!.hidden = true;
     open = null;
     pinned = false;
-    sysFig.classList.remove('is-focus');
-    for (const g of nodes) {
+    fig.classList.remove('is-focus');
+    for (const g of nodes()) {
       g.classList.remove('is-on', 'is-near');
       g.setAttribute('aria-expanded', 'false');
     }
-    for (const l of links) l.classList.remove('is-lit');
+    for (const l of links()) l.classList.remove('is-lit');
   };
   const later = () => {
     clearTimeout(closeT);
     if (!pinned) closeT = window.setTimeout(hide, 180);
   };
-
-  for (const g of nodes) {
+  const toggle = (g: SVGGElement) => {
     const key = g.dataset.node!;
-    g.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && show(key, g));
-    g.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && later());
-    g.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (open === key && pinned) hide();
-      else show(key, g, true);
-    });
-    g.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        if (open === key && pinned) hide();
-        else show(key, g, true);
-      }
-    });
-    g.addEventListener('focus', () => show(key, g));
-    g.addEventListener('blur', later);
-  }
+    if (open === key && pinned) hide();
+    else show(key, g, true);
+  };
+
+  const partOf = (t: EventTarget | null) => (t instanceof Element ? t.closest<SVGGElement>('[data-node]') : null);
+  fig.addEventListener('pointerover', (e) => {
+    const g = partOf(e.target);
+    if (g && e.pointerType === 'mouse' && partOf(e.relatedTarget) !== g) show(g.dataset.node!, g);
+  });
+  fig.addEventListener('pointerout', (e) => {
+    const g = partOf(e.target);
+    if (g && e.pointerType === 'mouse' && partOf(e.relatedTarget) !== g) later();
+  });
+  fig.addEventListener('click', (e) => {
+    const g = partOf(e.target);
+    if (!g) return;
+    e.stopPropagation();
+    toggle(g);
+  });
+  fig.addEventListener('keydown', (e) => {
+    const g = partOf(e.target);
+    if (g && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      toggle(g);
+    }
+  });
+  fig.addEventListener('focusin', (e) => {
+    const g = partOf(e.target);
+    if (g) show(g.dataset.node!, g);
+  });
+  fig.addEventListener('focusout', (e) => partOf(e.target) && later());
   for (const card of cards.values()) {
     card.addEventListener('pointerenter', () => clearTimeout(closeT));
     card.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && later());
     card.addEventListener('click', (e) => e.stopPropagation());
   }
-  $$('[data-card-close]', sysFig).forEach((b) => b.addEventListener('click', hide));
+  $$('[data-card-close]', fig).forEach((b) => b.addEventListener('click', hide));
   document.addEventListener('click', () => open && hide());
   document.addEventListener('keydown', (e) => e.key === 'Escape' && open && hide());
   addEventListener('resize', () => open && hide());
+}
+
+const sysFig = $('[data-system]');
+// System: inputs open to the right, outputs to the left, the products below
+if (sysFig) wireCards(sysFig, (n, x, w) => (!n.classList.contains('sys__pill') ? 'below' : x < w / 2 ? 'right' : 'left'));
+// Command: sources open to the right, the core below, agents and outputs to the left
+const cmdFig = $('.cmd__fig');
+if (cmdFig) wireCards(cmdFig, (n) => (n.classList.contains('node--src') ? 'right' : n.classList.contains('node--core') ? 'below' : 'left'));
+
+// ---------- System story: one message travels the whole system ----------
+
+const storyEl = $('.sys__story');
+if (sysFig && storyEl && !reduce) {
+  interface Journey {
+    time: string;
+    from: string;
+    input: string;
+    record: string[];
+    agent: number;
+    decision: string;
+    voice: string;
+    to: string;
+    done: string;
+    lines: string[];
+  }
+  const journeys: Journey[] = JSON.parse(storyEl.dataset.story ?? '[]');
+  const agentNames: string[] = JSON.parse(storyEl.dataset.agents ?? '[]');
+  const stage = $('.sys__stage', sysFig)!;
+  const tok = $('.tok', stage)!;
+  const tokCard = $('.tok__card', tok)!;
+  const scan = $('.sys__scan', stage)!;
+  const wave = $('.sys__wave', stage)!;
+  const agentTag = $('.sys__agent-name', stage)!;
+  const badge = $('.sys__badge', stage)!;
+  const timeEl = $('.sys__story-time', storyEl)!;
+  const textEl = $('.sys__story-text', storyEl)!;
+
+  let visible = false;
+  new IntersectionObserver((e) => (visible = e[e.length - 1].isIntersecting), { threshold: 0.3 }).observe(sysFig);
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  // The story holds while it is off-screen, the tab is hidden or a card is open
+  const gate = async () => {
+    while (!visible || document.hidden || sysFig.classList.contains('is-focus')) await sleep(200);
+  };
+  const hold = async (ms: number) => {
+    await gate();
+    await sleep(ms);
+  };
+
+  const svg = () => [...sysFig.querySelectorAll<SVGSVGElement>('svg.sys__svg')].find((s) => s.getBoundingClientRect().width > 0)!;
+  const nodeOf = (k: string) => svg().querySelector<SVGGElement>(`[data-node="${k}"]`)!;
+  const lineOf = (a: string, b: string) => svg().querySelector<SVGPathElement>(`.sys__link[data-a="${a}"][data-b="${b}"]`)!;
+  const box = (el: Element) => {
+    const f = sysFig.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    return { x: r.left - f.left, y: r.top - f.top, w: r.width, h: r.height };
+  };
+  // Points along a drawn line, in the figure's own pixels
+  const along = (p: SVGPathElement, n = 30): [number, number][] => {
+    const f = sysFig.getBoundingClientRect();
+    const m = p.getScreenCTM()!;
+    const len = p.getTotalLength();
+    return Array.from({ length: n + 1 }, (_, i) => {
+      const q = p.getPointAtLength((len * i) / n);
+      return [q.x * m.a + q.y * m.c + m.e - f.left, q.x * m.b + q.y * m.d + m.f - f.top];
+    });
+  };
+  // The truck's centre sits on the point; the card rides above it
+  const at = ([x, y]: [number, number]) => `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+  let here: [number, number] = [0, 0];
+  const put = (pt: [number, number]) => {
+    here = pt;
+    tok.style.transform = at(pt);
+  };
+  const glide = async (pts: [number, number][], ms: number) => {
+    await gate();
+    tok.classList.add('is-driving');
+    const a = tok.animate(pts.map((p) => ({ transform: at(p) })), { duration: ms, easing: 'cubic-bezier(0.65, 0, 0.35, 1)', fill: 'forwards' });
+    await a.finished;
+    put(pts[pts.length - 1]);
+    a.cancel();
+    tok.classList.remove('is-driving');
+  };
+  const travel = async (line: SVGPathElement, ms: number) => {
+    const pts = along(line);
+    await glide([here, pts[0]], 260);
+    line.classList.add('is-run');
+    await glide(pts, ms);
+    line.classList.remove('is-run');
+  };
+  // Hover just above a part, so its name stays readable
+  const above = async (k: string) => {
+    const b = box(nodeOf(k));
+    await glide([here, [b.x + b.w / 2, b.y - 10]], 320);
+  };
+  const esc = (t: string) => t.replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]!);
+  const become = async (kind: string, html: string) => {
+    const old = tokCard.querySelector('.tok__in');
+    if (old) await old.animate([{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(0.6)', opacity: 0 }], { duration: 160, easing: 'ease-in' }).finished;
+    tok.className = `tok tok--${kind} is-on`;
+    tokCard.innerHTML = `<span class="tok__in">${html}</span>`;
+    tokCard.querySelector('.tok__in')!.animate([{ transform: 'scale(0.6)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 360, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
+  };
+  const narrate = (time: string, line: string) => {
+    textEl.classList.add('is-swap');
+    setTimeout(() => {
+      timeEl.textContent = time;
+      textEl.textContent = line;
+      textEl.classList.remove('is-swap');
+    }, 220);
+  };
+  const lit = (k: string, on: boolean) => nodeOf(k)?.classList.toggle('is-hit', on);
+  const cover = (el: HTMLElement, k: string) => {
+    const b = box(nodeOf(k));
+    Object.assign(el.style, { left: `${b.x}px`, top: `${b.y}px`, width: `${b.w}px`, height: `${b.h}px` });
+  };
+  const under = (el: HTMLElement, k: string, gap = 10) => {
+    const b = box(nodeOf(k));
+    Object.assign(el.style, { left: `${b.x + b.w / 2}px`, top: `${b.y + b.h + gap}px` });
+  };
+
+  const play = async (j: Journey) => {
+    // 1. The message arrives where it was written
+    await gate();
+    narrate(j.time, j.lines[0]);
+    lit(j.from, true);
+    const inLine = lineOf(j.from, 'occuralog');
+    put(along(inLine)[0]);
+    await become('msg', esc(j.input));
+    await hold(1500);
+    lit(j.from, false);
+    await travel(inLine, 1200);
+
+    // 2. Occuralog reads it and writes a record
+    lit('occuralog', true);
+    await above('occuralog');
+    cover(scan, 'occuralog');
+    scan.classList.add('is-run');
+    narrate(j.time, j.lines[1]);
+    await sleep(500);
+    await become('rec', j.record.map((r) => `<b>${esc(r)}</b>`).join(''));
+    await hold(1800);
+    scan.classList.remove('is-run');
+    lit('occuralog', false);
+    await travel(lineOf('occuralog', 'command'), 1000);
+
+    // 3. Command: one agent takes it and reaches a decision
+    lit('command', true);
+    await above('command');
+    const pip = svg().querySelector(`.sys__agent[data-agent="${j.agent}"]`);
+    pip?.classList.add('is-lit');
+    agentTag.textContent = agentNames[j.agent] ?? '';
+    under(agentTag, 'command');
+    agentTag.classList.add('is-on');
+    narrate(j.time, j.lines[2]);
+    await sleep(600);
+    await become('dec', esc(j.decision));
+    await hold(2000);
+    pip?.classList.remove('is-lit');
+    agentTag.classList.remove('is-on');
+    lit('command', false);
+    await travel(lineOf('command', 'echo'), 1000);
+
+    // 4. Echo: one spoken sentence
+    lit('echo', true);
+    await above('echo');
+    const eb = box(nodeOf('echo'));
+    Object.assign(wave.style, { left: `${eb.x + eb.w / 2 - 50}px`, top: `${eb.y + eb.h - 34}px`, width: '100px' });
+    wave.classList.add('is-run');
+    narrate(j.time, j.lines[3]);
+    await sleep(700);
+    await become('voice', esc(j.voice));
+    await hold(1900);
+    wave.classList.remove('is-run');
+    lit('echo', false);
+    await travel(lineOf('echo', j.to), 1000);
+
+    // 5. It lands: approved or flagged, and the day's report grows by one
+    lit(j.to, true);
+    await become('done', esc(j.done));
+    narrate(j.time, j.lines[4]);
+    lit('reports', true);
+    badge.textContent = '+1';
+    under(badge, 'reports', 6);
+    badge.classList.add('is-on');
+    await hold(2400);
+    badge.classList.remove('is-on');
+    lit('reports', false);
+    lit(j.to, false);
+    await tok.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' }).finished;
+    tok.getAnimations().forEach((a) => a.cancel());
+    tok.className = 'tok';
+    tokCard.replaceChildren();
+  };
+
+  (async () => {
+    for (let i = 0; ; i++) {
+      await play(journeys[i % journeys.length]);
+      await hold(700);
+    }
+  })();
 }
 
 // ---------- Echo: listen, the sentence lands, then what Echo did ----------

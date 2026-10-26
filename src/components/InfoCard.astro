@@ -1,0 +1,103 @@
+---
+// The card a diagram part opens: a small animated scene of what that part
+// does, then what, when, how and why. Used by the System and Command diagrams.
+import '../styles/cards.css';
+
+interface Props {
+  id: string;
+  viz: string;
+  /** For agent cards: which of the six agents is the one */
+  agent?: number;
+  /** The line under the agent scene */
+  sample?: string;
+  title: string;
+  kind: string;
+  what: string;
+  when: string;
+  how: string;
+  why: string;
+  rows: { what: string; when: string; how: string; why: string };
+  close: string;
+}
+const { id, viz, agent = 1, sample, title, kind, what, when, how, why, rows, close } = Astro.props;
+---
+<div class="sys__card" data-card={id} role="dialog" aria-label={title} hidden>
+  <button class="sys__close" type="button" data-card-close aria-label={close}>×</button>
+  <div class:list={['viz', `viz--${viz}`]} aria-hidden="true">
+    {viz === 'whatsapp' && (
+      <Fragment>
+        <span class="viz__b">truck late hai <i>✓✓</i></span>
+        <span class="viz__b">3 container ruke <i>✓✓</i></span>
+        <span class="viz__b">stock khatam <i>✓✓</i></span>
+      </Fragment>
+    )}
+    {viz === 'spreadsheets' && (
+      <div class="viz__grid">
+        <span></span><span>A</span><span>B</span>
+        <span>4</span><span>bags</span><span>120</span>
+        <span>5</span><span>cartons</span><span class="viz__flip"><b>230</b><b>30</b></span>
+        <span>6</span><span>pallets</span><span>14</span>
+      </div>
+    )}
+    {viz === 'email' && (
+      <Fragment>
+        <span class="viz__mail"><i></i>Re: PO-1187 lead time</span>
+        <span class="viz__mail"><i></i>Re: Re: PO-1187 lead time</span>
+        <span class="viz__mail viz__mail--new"><i></i>Re: Re: Re: PO-1187 lead time</span>
+      </Fragment>
+    )}
+    {(viz === 'erp' || viz === 'data') && (
+      <Fragment>
+        <span class="viz__row"><b>PO-1187</b> 400 cartons <em>open</em></span>
+        <span class="viz__row"><b>BOM-22</b> copper wire <em>12 lines</em></span>
+        <span class="viz__row"><b>{viz === 'data' ? 'MSG-07' : 'SO-3410'}</b> {viz === 'data' ? 'truck late' : 'Sukkur'} <em>{viz === 'data' ? '0.94' : 'due Thu'}</em></span>
+      </Fragment>
+    )}
+    {viz === 'occuralog' && (
+      <div class="viz__morph">
+        <span class="viz__b viz__b--src">truck late hai, 200 carton kal</span>
+        <span class="viz__arrow">↓</span>
+        <span class="viz__chip"><b>Cartons</b><b>200</b><b>ETA tomorrow</b><b>0.94</b></span>
+      </div>
+    )}
+    {(viz === 'command' || viz === 'agent') && (
+      <div class="viz__agents" style={`--hit:${agent}`}>
+        <div>{[0, 1, 2, 3, 4, 5].map((n) => <i class:list={{ 'is-hit': n === agent }}></i>)}</div>
+        <span class="viz__caption">{sample ?? 'Inventory: 30 cartons left, reorder raised'}</span>
+      </div>
+    )}
+    {viz === 'echo' && (
+      <div class="viz__voice">
+        <span class="viz__mic"></span>
+        <span class="viz__wave">{[0, 1, 2, 3, 4, 5, 6, 7, 8].map((n) => <i style={`--k:${n}`}></i>)}</span>
+        <span class="viz__said">“Approve the reorder”</span>
+      </div>
+    )}
+    {viz === 'alerts' && (
+      <div class="viz__alert">
+        <span class="viz__flag"></span>
+        <span class="viz__type">Customs hold: line stops in 4 days</span>
+      </div>
+    )}
+    {viz === 'approvals' && (
+      <div class="viz__approve">
+        <span>Reorder 400 cartons</span>
+        <span class="viz__btn"><svg viewBox="0 0 16 16"><path d="M3 8.5 L6.5 12 L13 4.5" /></svg>Approve</span>
+      </div>
+    )}
+    {viz === 'reports' && (
+      <div class="viz__bars">
+        <div>{[44, 70, 32, 86, 58].map((h, n) => <i style={`--h:${h}%;--k:${n}`}></i>)}</div>
+        <span class="viz__caption">8 records · 6 decisions</span>
+      </div>
+    )}
+  </div>
+  <p class="sys__card-kind">{kind}</p>
+  <h3 class="sys__card-title">{title}</h3>
+  <dl class="sys__rows">
+    <div><dt>{rows.what}</dt><dd>{what}</dd></div>
+    <div><dt>{rows.when}</dt><dd>{when}</dd></div>
+    <div><dt>{rows.how}</dt><dd>{how}</dd></div>
+    <div><dt>{rows.why}</dt><dd>{why}</dd></div>
+  </dl>
+</div>

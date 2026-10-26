@@ -76,8 +76,8 @@ const browser = await chromium.launch({ channel: process.env.PW_CHANNEL || 'msed
   // Command diagram and building
   await page.evaluate(() => document.getElementById('command').scrollIntoView());
   await page.waitForTimeout(2500);
-  const dg = await page.evaluate(() => ({ nodes: document.querySelectorAll('.flow .node--agent').length, packets: document.querySelectorAll('.flow .pk').length, alert: document.querySelectorAll('.flow .node--agent.is-alert').length }));
-  check('command: six agents, packets flowing, one agent alerting', dg.nodes === 6 && dg.packets > 5 && dg.alert === 1, JSON.stringify(dg));
+  const dg = await page.evaluate(() => ({ nodes: document.querySelectorAll('.flow .node--agent').length, trucks: document.querySelectorAll('.flow .tk').length, cards: document.querySelectorAll('.cmd__fig [data-card]').length, alert: document.querySelectorAll('.flow .node--agent.is-alert').length }));
+  check('command: six agents, trucks driving, one agent alerting, 14 cards', dg.nodes === 6 && dg.trucks > 5 && dg.cards === 14 && dg.alert === 1, JSON.stringify(dg));
   await page.evaluate(() => document.getElementById('private').scrollIntoView());
   await page.waitForTimeout(1500);
   check('no WebGL anywhere (three.js removed)', !(await page.evaluate(() => !!window.__webgl)));

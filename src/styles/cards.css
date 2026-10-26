@@ -1,0 +1,597 @@
+/* The card a diagram part opens (System and Command): a small animated
+   scene of what the part does, then what, when, how and why. */
+.sys__card {
+  position: absolute;
+  z-index: 5;
+  width: 320px;
+  padding: var(--s2) var(--s3) var(--s3);
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  transform-origin: var(--ox, 50%) var(--oy, 0%);
+  animation: card-in 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sys__card[hidden] {
+  display: none;
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.94);
+  }
+}
+.sys__close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--ink-60);
+  cursor: pointer;
+}
+.sys__close:hover {
+  background: var(--ink-06);
+  color: var(--ink);
+}
+.sys__card-kind {
+  margin-top: var(--s2);
+  font-family: var(--font-mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.04em;
+  color: var(--violet);
+}
+.sys__card-title {
+  margin-top: 2px;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+.sys__rows {
+  display: grid;
+  gap: 8px;
+  margin: var(--s2) 0 0;
+}
+.sys__rows div {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 10px;
+  align-items: baseline;
+  opacity: 0;
+  animation: row-in 360ms var(--ease-out) forwards;
+}
+.sys__rows div:nth-child(1) { animation-delay: 120ms; }
+.sys__rows div:nth-child(2) { animation-delay: 200ms; }
+.sys__rows div:nth-child(3) { animation-delay: 280ms; }
+.sys__rows div:nth-child(4) { animation-delay: 360ms; }
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.sys__rows dt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+}
+.sys__rows dd {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* ---------- the little stories, one per part ---------- */
+.viz {
+  position: relative;
+  height: 104px;
+  margin-right: 28px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--white);
+  border: 1px solid var(--ink-12);
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+/* WhatsApp: messages arrive one by one */
+.viz--whatsapp {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.viz__b {
+  align-self: flex-start;
+  padding: 4px 9px;
+  border-radius: 9px 9px 9px 2px;
+  background: var(--ink-06);
+  border: 1px solid var(--ink-12);
+  opacity: 0;
+  animation: pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.viz__b i {
+  font-style: normal;
+  color: var(--violet);
+  letter-spacing: -0.3em;
+  margin-left: 4px;
+}
+.viz--whatsapp .viz__b:nth-child(2) { animation-delay: 500ms; align-self: center; }
+.viz--whatsapp .viz__b:nth-child(3) { animation-delay: 1000ms; }
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Spreadsheets: the number quietly stops being true */
+.viz__grid {
+  display: grid;
+  grid-template-columns: 22px 1fr 1fr;
+  border-top: 1px solid var(--ink-12);
+  border-left: 1px solid var(--ink-12);
+}
+.viz__grid span {
+  height: 21px;
+  padding: 0 6px;
+  border-right: 1px solid var(--ink-12);
+  border-bottom: 1px solid var(--ink-12);
+  line-height: 21px;
+  overflow: hidden;
+}
+.viz__grid span:nth-child(-n + 3),
+.viz__grid span:nth-child(3n + 1) {
+  background: var(--ink-06);
+  color: var(--ink-60);
+  font-size: 10px;
+  text-align: center;
+}
+.viz__flip {
+  position: relative;
+  outline: 2px solid var(--violet);
+  outline-offset: -2px;
+}
+.viz__flip b {
+  position: absolute;
+  left: 6px;
+  font-weight: 400;
+  animation: flip-out 600ms 1.1s forwards;
+}
+.viz__flip b + b {
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(100%);
+  animation: flip-in 600ms 1.1s forwards;
+}
+.viz__flip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--violet-soft);
+  opacity: 0;
+  animation: fade-in 400ms 1.4s forwards;
+  z-index: -1;
+}
+@keyframes flip-out {
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+@keyframes flip-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}
+/* Email: the thread grows */
+.viz--email {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.viz__mail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--ink-12);
+  color: var(--ink-60);
+  opacity: 0;
+  animation: slide-in 400ms var(--ease-out) forwards;
+}
+.viz__mail i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-20);
+}
+.viz__mail:nth-child(2) { animation-delay: 350ms; }
+.viz__mail--new {
+  color: var(--ink);
+  animation-delay: 700ms;
+}
+.viz__mail--new i {
+  background: var(--violet);
+  animation: blinkdot 1s 1.1s ease-in-out infinite;
+}
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes blinkdot {
+  50% {
+    opacity: 0.2;
+  }
+}
+/* ERP: rows sync in */
+.viz--erp {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.viz__row {
+  display: flex;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: var(--ink-06);
+  opacity: 0;
+  animation: slide-in 380ms var(--ease-out) forwards;
+}
+.viz__row:nth-child(2) { animation-delay: 300ms; }
+.viz__row:nth-child(3) { animation-delay: 600ms; }
+.viz__row b {
+  font-weight: 400;
+  color: var(--violet);
+}
+.viz__row em {
+  margin-left: auto;
+  font-style: normal;
+  color: var(--ink-60);
+}
+/* Occuralog: a message becomes a record */
+.viz__morph {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+}
+.viz__b--src {
+  animation:
+    pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    scanbg 700ms 700ms forwards;
+}
+@keyframes scanbg {
+  to {
+    background: var(--violet-soft);
+    border-color: var(--violet);
+  }
+}
+.viz__arrow {
+  margin-left: 20px;
+  color: var(--violet);
+  opacity: 0;
+  animation: fade-in 300ms 1.2s forwards;
+}
+.viz__chip {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1.5px solid var(--violet);
+  border-radius: 6px;
+  opacity: 0;
+  animation: pop 420ms 1.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.viz__chip b {
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--violet-soft);
+  font-weight: 400;
+}
+.viz__chip b:last-child {
+  background: none;
+  color: var(--ink-60);
+}
+/* Command: six agents watching, one finds something */
+.viz__agents {
+  display: grid;
+  gap: 14px;
+  padding-top: 10px;
+}
+.viz__agents div {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+}
+.viz__agents i {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--violet);
+  opacity: 0.35;
+}
+.viz__agents i.is-hit {
+  animation: agent-hit 600ms 1.2s forwards;
+  opacity: 1;
+}
+.viz__agents i.is-hit::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 2px solid var(--violet);
+  border-radius: 50%;
+  opacity: 0;
+  animation: ring 1.2s 1.4s ease-out infinite;
+}
+@keyframes agent-hit {
+  to {
+    background: var(--ink);
+    transform: scale(1.3);
+  }
+}
+@keyframes ring {
+  from {
+    opacity: 1;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+.viz__caption {
+  justify-self: center;
+  color: var(--ink-60);
+  opacity: 0;
+  animation: fade-in 400ms 1.6s forwards;
+}
+/* Echo: someone speaks */
+.viz__voice {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px 12px;
+  padding-top: 8px;
+}
+.viz__mic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--violet);
+  box-shadow: 0 0 0 0 var(--violet-soft);
+  animation: mic 1.4s ease-out infinite;
+}
+@keyframes mic {
+  to {
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
+.viz__wave {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+}
+.viz__wave i {
+  width: 4px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--violet);
+  animation: wave 0.9s ease-in-out infinite;
+  animation-delay: calc(var(--k) * 0.08s);
+}
+.viz__said {
+  grid-column: 1 / -1;
+  color: var(--ink);
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  animation: typing 1.2s 0.6s steps(21) forwards;
+}
+@keyframes typing {
+  to {
+    width: 21ch;
+  }
+}
+/* Alerts: the flag goes up */
+.viz__alert {
+  display: grid;
+  gap: 10px;
+  padding-top: 6px;
+}
+.viz__flag {
+  position: relative;
+  width: 2px;
+  height: 42px;
+  margin-left: 6px;
+  background: var(--ink);
+  transform-origin: bottom;
+  animation: rise 400ms var(--ease-out) both;
+}
+.viz__flag::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0;
+  width: 26px;
+  height: 16px;
+  background: var(--violet);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transform-origin: left;
+  animation: wave-flag 0.8s 0.4s ease-in-out infinite alternate;
+}
+@keyframes rise {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes wave-flag {
+  to {
+    transform: scaleX(0.8) skewY(6deg);
+  }
+}
+.viz__type {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  color: var(--ink);
+  animation: typing-long 1.4s 0.5s steps(34) forwards;
+}
+@keyframes typing-long {
+  to {
+    width: 34ch;
+  }
+}
+/* Approvals: the yes */
+.viz__approve {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 10px;
+  border: 1px solid var(--ink-20);
+  border-radius: 8px;
+}
+.viz__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: var(--ink-06);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  animation: approve 300ms 1.1s forwards;
+}
+.viz__btn svg {
+  width: 14px;
+  height: 14px;
+}
+.viz__btn path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16;
+  stroke-dashoffset: 16;
+  animation: tick 400ms 1.3s forwards;
+}
+@keyframes approve {
+  to {
+    background: var(--violet);
+    color: var(--paper);
+  }
+}
+@keyframes tick {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/* Reports: the day adds up */
+.viz__bars {
+  display: grid;
+  gap: 8px;
+}
+.viz__bars div {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 58px;
+  padding-inline: 4px;
+  border-bottom: 1px solid var(--ink-20);
+}
+.viz__bars i {
+  flex: 1;
+  height: var(--h);
+  border-radius: 3px 3px 0 0;
+  background: var(--violet);
+  transform-origin: bottom;
+  animation: grow 600ms var(--ease-out) both;
+  animation-delay: calc(var(--k) * 0.12s);
+}
+.viz__bars i:nth-child(4) {
+  background: var(--ink);
+}
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+.viz__bars .viz__caption {
+  justify-self: start;
+  animation-delay: 0.8s;
+}
+@keyframes wave {
+  0%,
+  100% {
+    height: 6px;
+  }
+  50% {
+    height: 26px;
+  }
+}
+
+/* phones: the card is a sheet from the bottom */
+@media (max-width: 959px) {
+  .sys__card {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    top: auto !important;
+    width: auto;
+    max-height: 72vh;
+    overflow: auto;
+    animation: sheet-in 320ms var(--ease-out);
+  }
+  @keyframes sheet-in {
+    from {
+      transform: translateY(40px);
+      opacity: 0;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sys__card,
+  .sys__card * {
+    animation: none !important;
+  }
+  .sys__rows div,
+  .viz *,
+  .viz__said,
+  .viz__type {
+    opacity: 1 !important;
+    width: auto !important;
+    transform: none !important;
+  }
+}
