@@ -48,7 +48,3 @@ node scripts/story.mjs       # screenshot of every story beat
 node scripts/assets.mjs      # regenerate public/fallbacks/*.png and public/og.png
 ```
 
-## Inputs still owed
-
-- `public/logo.svg`, `public/logo-ink.svg` are stand-ins drawn during the build. Replace with the ring from the LinkedIn logo source file.
-- In `copy.ts`: the GitHub organisation URL, the company LinkedIn page URL, and LinkedIn URLs for Muntaha and Rizwan.
