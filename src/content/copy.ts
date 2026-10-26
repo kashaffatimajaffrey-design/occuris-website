@@ -284,7 +284,7 @@ export const proof = {
     'Urdu and English, often in the same message.', // DRAFT note
   ],
   pilot:
-    'Our first pilot ran Occuris Command for an import and export business across countries and time zones: stock, lead times, end-of-life parts and supply-risk news, with every answer cited.',
+    'Our first pilot ran Occuris Command for NKE Technica, an electronics import and export business, across countries and time zones: stock, lead times, end-of-life parts and supply-risk news, with every answer cited.',
   workHeading: 'Work with us',
   workIntro:
     'The three products are the start. Most clients need them shaped to their own tools, data and rules. We build that, on your infrastructure, with you owning the code.',
