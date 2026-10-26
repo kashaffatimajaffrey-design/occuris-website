@@ -71,8 +71,22 @@
   color: var(--ink-70);
   text-wrap: pretty;
 }
+.hero__more {
+  margin-top: var(--s2);
+  font-size: var(--t-ui);
+  line-height: 1.5;
+  color: var(--ink-60);
+  text-wrap: pretty;
+}
 .hero__actions {
   margin-top: var(--s4);
+}
+.beat__type .ghost {
+  visibility: hidden;
+}
+/* Phones only: a way past the story to the products */
+.story__skip {
+  display: none;
 }
 .hero__hint {
   display: flex;
@@ -437,19 +451,40 @@
     padding-top: calc(var(--nav-h) + var(--s3));
   }
   .beat--hero {
-    padding-top: calc(var(--nav-h) + var(--s4));
+    padding-top: var(--nav-h);
+  }
+  /* The hero text sits on paper above the map instead of running into it */
+  .hero__block {
+    margin-inline: calc(var(--pad) * -1);
+    padding: var(--s3) var(--pad) var(--s2);
+    background: var(--paper);
   }
   .hero__title {
-    font-size: 40px;
+    font-size: 36px;
+    line-height: 1.02;
   }
   .hero__sub {
-    font-size: 17px;
+    margin-top: var(--s2);
+    font-size: 16px;
+  }
+  .hero__more {
+    font-size: 14px;
+  }
+  .hero__actions {
+    margin-top: var(--s3);
+  }
+  .hero__alert {
+    min-height: 0;
+  }
+  .hero__alert:not(.is-on) {
+    display: none;
   }
   .hero__actions .btn {
     width: 100%;
   }
   .hero__hint {
     margin-top: var(--s2);
+    font-size: 13px;
   }
   .beat__card {
     padding: var(--s3);
@@ -467,6 +502,22 @@
   }
   .beat__decision {
     min-height: 0;
+  }
+  .story__skip {
+    display: inline-flex;
+    position: absolute;
+    right: 10px;
+    bottom: 56px;
+    z-index: 2;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: var(--t-label);
+    font-weight: 500;
+  }
+  .story__skip:hover {
+    text-decoration: none;
   }
   .hud {
     top: auto;

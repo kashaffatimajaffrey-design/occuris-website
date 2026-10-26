@@ -17,6 +17,7 @@ import '../styles/screens/story.css';
       <canvas role="img" aria-label={hero.mapLabel}></canvas>
       <div class="story__overlay" aria-hidden="true"></div>
       <img class="fallback" src="/fallbacks/map.png" alt={fallbackAlt.map} loading="lazy" decoding="async" />
+      <a class="story__skip" href="#system" data-scroll>{story.skip}<span aria-hidden="true"> ↓</span></a>
       <div class="hud" aria-hidden="true">
         <span class="hud__clock" data-clock>{story.beats[0].time}</span>
         <span class="hud__n"><b data-count="messages">0</b> {story.hud.messages}</span>
@@ -28,8 +29,10 @@ import '../styles/screens/story.css';
 
   <div class="story__beats wrap">
     <div class="beat beat--hero" data-beat="0">
+      <div class="hero__block">
       <Headline as="h1" id="hero-title" lines={hero.headline} class="hero__title" />
       <p class="hero__sub">{hero.subline}</p>
+      <p class="hero__more">{hero.sublineMore}</p>
       <div class="hero__actions">
         <a class="btn btn--lg" href="#contact" data-scroll>{hero.cta}<span class="btn__arrow" aria-hidden="true">↓</span></a>
       </div>
@@ -37,6 +40,7 @@ import '../styles/screens/story.css';
       <p class="hero__alert" aria-live="polite">
         <span class="hero__flag" aria-hidden="true"></span><span data-alert></span><span class="caret" aria-hidden="true"></span>
       </p>
+      </div>
     </div>
 
     {story.beats.map((b, i) => (
@@ -54,7 +58,7 @@ import '../styles/screens/story.css';
           {'decision' in b && (
             <p class:list={['beat__decision', { 'beat__decision--ok': i === 1 }]}>
               <span class="beat__tag beat__tag--with">{story.with}</span>
-              <span class="beat__type" data-decision={b.decision} aria-hidden="true"></span><span class="sr-only">{b.decision}</span>
+              <span class="beat__type" data-decision={b.decision}>{b.decision}</span>
             </p>
           )}
         </div>

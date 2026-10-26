@@ -305,20 +305,23 @@ export function init(canvas: HTMLCanvasElement, o: BuildingOptions): Piece {
     g.stroke();
     g.setLineDash([]);
     g.globalAlpha = 1;
-    g.font = `400 ${Math.round(Math.max(11, cam.t * 0.42))}px "JetBrains Mono", monospace`;
+    g.font = `400 ${Math.round(Math.max(10, Math.min(13, cam.t * 0.42)))}px "JetBrains Mono", monospace`;
+    // Labels stay inside the canvas, however narrow it is
+    const label = (text: string, x: number, y: number) => {
+      const half = g.measureText(text).width / 2;
+      g.fillText(text, Math.min(Math.max(x, half + 6), W - half - 6), y);
+    };
     g.fillStyle = c.mist;
     g.textAlign = 'center';
-    g.fillText(o.labels.cloud, cx, cy + s * 1.15);
+    label(o.labels.cloud, cx, cy + s * 1.15);
 
     // Labels inside
     g.fillStyle = c.paper;
     g.globalAlpha = 0.85;
-    const [mx, my] = P(CORE[0] + 1.15, CORE[1] + 0.2, 1.5);
-    g.textAlign = 'left';
-    g.fillText(o.labels.model, mx, my);
-    g.textAlign = 'center';
+    const [mx, my] = P(CORE[0], CORE[1] + 1.4, 0);
+    label(o.labels.model, mx, my + cam.t * 0.5);
     const [ax, ay] = P(LOG[0] + 1.3, LOG[1], 2.85);
-    g.fillText(o.labels.log, ax, ay);
+    label(o.labels.log, ax, ay);
     g.globalAlpha = 1;
   }
 

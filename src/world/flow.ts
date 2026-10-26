@@ -99,7 +99,7 @@ export function init(host: HTMLElement, o: FlowOptions): FlowDiagram {
       ag = o.agents.map((_, i) => [730, 45 + i * 70]);
       out = o.outputs.map((_, i) => [1080, 110 + i * 110]);
     } else {
-      src = o.sources.map((_, i) => [52 + (i % 2) * 256, 30 + Math.floor(i / 2) * 44]);
+      src = o.sources.map((_, i) => [84 + (i % 2) * 192, 30 + Math.floor(i / 2) * 44]);
       core = [180, 186];
       ag = o.agents.map((_, i) => [(i % 2) * 180 + 90, 300 + Math.floor(i / 2) * 64]);
       out = o.outputs.map((_, i) => [62 + i * 118, 600]);
@@ -108,7 +108,7 @@ export function init(host: HTMLElement, o: FlowOptions): FlowDiagram {
     ag.forEach((p, i) => curve(core, p, 'core', i, 0.5));
     ag.forEach((p, i) => curve(p, out[o.feeds[i]], 'out', i, 0.35));
 
-    o.sources.forEach((s, i) => pill(src[i][0], src[i][1], s, 'node--src', vertical ? 120 : undefined));
+    o.sources.forEach((s, i) => pill(src[i][0], src[i][1], s, 'node--src', vertical ? 150 : undefined));
     // the core: the brand ring, turning slowly
     const c = el('g', { class: 'node node--core', transform: `translate(${core[0]} ${core[1]})` }, layers.nodes);
     el('circle', { r: vertical ? 34 : 46, class: 'core__halo' }, c);

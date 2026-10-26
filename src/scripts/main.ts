@@ -25,6 +25,37 @@ declare global {
 
 // ---------- typing ----------
 
+/**
+ * Reveals text already in an element as if typed: the untyped part stays in
+ * place but invisible, so the layout never jumps and the text exists once.
+ */
+function typeIn(el: HTMLElement, cps = 55) {
+  const text = el.dataset.decision ?? el.textContent ?? '';
+  let timer = 0;
+  const paint = (n: number) => {
+    const shown = document.createElement('span');
+    shown.textContent = text.slice(0, n);
+    const ghost = document.createElement('span');
+    ghost.className = 'ghost';
+    ghost.textContent = text.slice(n);
+    el.replaceChildren(shown, ghost);
+  };
+  return {
+    hide: () => paint(0),
+    type() {
+      clearInterval(timer);
+      let n = 0;
+      timer = window.setInterval(() => {
+        paint(++n);
+        if (n >= text.length) {
+          clearInterval(timer);
+          el.textContent = text;
+        }
+      }, 1000 / cps);
+    },
+  };
+}
+
 /** Types text into an element at 40 characters per second. */
 function typer(el: HTMLElement, cps = 40) {
   let timer = 0;
@@ -203,7 +234,13 @@ if (mapStage && !reduce) {
   // On phones the beat card covers the top of the map, so aim lower
   if (phone) SHOTS.forEach((s, i) => i > 1 && (s.ay = 0.66));
 
-  const typers = new Map<HTMLElement, ReturnType<typeof typer>>();
+  // Each decision is in the page once; it starts hidden and types in when its message is parsed
+  const typers = new Map<HTMLElement, ReturnType<typeof typeIn>>();
+  for (const slot of $$('[data-decision]')) {
+    const t = typeIn(slot);
+    t.hide();
+    typers.set(slot, t);
+  }
 
   function enter(i: number) {
     if (!map || i === current) return;
@@ -246,9 +283,7 @@ if (mapStage && !reduce) {
         if (!slot) return;
         beat.classList.add('is-decided');
         if (!beat.querySelector('.beat__decision--ok')) bump(counts.decisions, Number(counts.decisions?.textContent ?? 0) + 1);
-        let t = typers.get(slot);
-        if (!t) typers.set(slot, (t = typer(slot, 55)));
-        t.type(slot.dataset.decision ?? '');
+        typers.get(slot)?.type();
       },
       onBreak(link) {
         if (current > 1 || !alertText || !alertBox) return;
@@ -460,6 +495,32 @@ if (strip) {
     io.observe(strip.closest('section') ?? strip);
   }
 }
+
+// ---------- Echo: listen, the sentence lands, then what Echo did ----------
+
+const echoCard = $('[data-echo]');
+if (echoCard && !reduce) {
+  echoCard.setAttribute('data-armed', '');
+  const said = $('.echo__said', echoCard)!;
+  const steps = $$('.echo__step', echoCard);
+  const play = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      play.disconnect();
+      echoCard.classList.add('is-listening');
+      setTimeout(() => {
+        echoCard.classList.remove('is-listening');
+        said.classList.add('is-shown');
+        const state = $('.echo__state', echoCard);
+        if (state?.dataset.heard) state.textContent = state.dataset.heard;
+      }, 1600);
+      steps.forEach((s, i) => setTimeout(() => s.classList.add('is-shown'), 2300 + i * 750));
+      setTimeout(() => echoCard.classList.add('is-done'), 2300 + steps.length * 750);
+    },
+    { threshold: 0.4 },
+  );
+  play.observe(echoCard);
+} else echoCard?.classList.add('is-done');
 
 // ---------- screen 5: the building ----------
 

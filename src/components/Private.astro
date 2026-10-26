@@ -10,6 +10,7 @@ import '../styles/screens/private.css';
       <p class="priv__body" data-reveal>
         {privateScreen.body.map((s) => <span>{s} </span>)}
       </p>
+      <p class="priv__models mono">{privateScreen.models}</p>
     </div>
 
     <div class="priv__frame stage" data-piece="building" data-labels={JSON.stringify(privateScreen.scene)}>

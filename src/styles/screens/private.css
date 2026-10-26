@@ -22,6 +22,13 @@
 .priv__body span {
   display: block;
 }
+.priv__models {
+  margin-top: var(--s3);
+  padding-top: var(--s2);
+  border-top: 1px solid var(--mist-30);
+  font-size: var(--t-small);
+  color: var(--paper);
+}
 .priv__body span + span {
   margin-top: var(--s1);
 }

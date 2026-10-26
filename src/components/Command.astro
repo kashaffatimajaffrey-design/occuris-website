@@ -8,7 +8,12 @@ import '../styles/screens/command.css';
     <div class="cmd__head">
       <p class="tag"><span class="tag__ring" aria-hidden="true"></span>{command.eyebrow}</p>
       <Headline id="cmd-title" lines={command.headline} class="cmd__title" />
-      <p class="cmd__body" data-reveal>{command.body}</p>
+      <div class="cmd__side">
+        <p class="cmd__body" data-reveal>{command.body}</p>
+        <ul class="cmd__outcomes" role="list">
+          {command.outcomes.map((o) => <li data-reveal>{o}</li>)}
+        </ul>
+      </div>
     </div>
 
     <div
@@ -19,7 +24,7 @@ import '../styles/screens/command.css';
       aria-label={command.diagramLabel}
     ></div>
 
-    <div class="log" data-strip data-alerts={JSON.stringify(command.alerts)} data-tz={command.timezone} data-tz-label={command.timezoneLabel}>
+    <div class="log" aria-hidden="true" data-strip data-alerts={JSON.stringify(command.alerts)} data-tz={command.timezone} data-tz-label={command.timezoneLabel}>
       <p class="log__prev mono" data-strip-prev aria-hidden="true"></p>
       <p class="log__now mono">
         <span class="log__meta"><span data-strip-time>--:--:--</span> <span data-strip-agent></span></span>

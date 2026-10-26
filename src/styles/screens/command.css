@@ -21,10 +21,36 @@
   line-height: 1.02;
   color: var(--paper);
 }
+.cmd__side {
+  grid-column: 8 / span 5;
+}
 .cmd__body {
-  grid-column: 9 / span 4;
   color: var(--mist);
   text-wrap: pretty;
+}
+.cmd__outcomes {
+  display: grid;
+  gap: 6px;
+  margin: var(--s3) 0 0;
+  padding: var(--s2) 0 0;
+  border-top: 1px solid var(--mist-30);
+  list-style: none;
+  font-size: var(--t-body);
+  line-height: 1.4;
+  color: var(--paper);
+}
+.cmd__outcomes li {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  align-items: baseline;
+}
+.cmd__outcomes li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  transform: translateY(-2px);
 }
 
 /* ---------- the diagram ---------- */
@@ -201,10 +227,10 @@
 
 @media (max-width: 959px) {
   .cmd__title,
-  .cmd__body {
+  .cmd__side {
     grid-column: 1 / -1;
   }
-  .cmd__body {
+  .cmd__side {
     margin-top: var(--s3);
   }
   .log__now {

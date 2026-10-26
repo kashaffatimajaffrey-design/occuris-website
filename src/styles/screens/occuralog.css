@@ -144,7 +144,7 @@ html:not(.js) .occ__table-wrap {
 }
 .occ__table {
   width: 100%;
-  min-width: 620px;
+  min-width: 640px;
   border-collapse: collapse;
   table-layout: fixed;
   font-family: var(--font-mono);
@@ -273,6 +273,10 @@ html:not(.js) .occ__table-wrap {
 }
 
 @media (max-width: 959px) {
+  /* On phones the table keeps readable columns and scrolls sideways in its frame */
+  .occ__table {
+    min-width: 760px;
+  }
   .occ__text,
   .occ__frame {
     grid-column: 1 / -1;
