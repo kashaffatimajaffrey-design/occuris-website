@@ -1,0 +1,64 @@
+---
+// Screen 1 and the day that follows it: the living map stays pinned while
+// the beats scroll past. Beat 0 is the hero.
+import Headline from './Headline.astro';
+import { hero, story, places, messages, fallbackAlt } from '../content/copy';
+import '../styles/screens/story.css';
+---
+<section class="story" id="top" data-screen="paper" aria-labelledby="hero-title">
+  <div class="story__stage">
+    <div
+      class="story__map stage"
+      data-piece="map"
+      data-messages={JSON.stringify(messages)}
+      data-places={JSON.stringify(places)}
+      data-alerts={JSON.stringify(hero.alerts)}
+    >
+      <canvas role="img" aria-label={hero.mapLabel}></canvas>
+      <div class="story__overlay" aria-hidden="true"></div>
+      <img class="fallback" src="/fallbacks/map.png" alt={fallbackAlt.map} loading="lazy" decoding="async" />
+      <div class="hud" aria-hidden="true">
+        <span class="hud__clock" data-clock>{story.beats[0].time}</span>
+        <span class="hud__n"><b data-count="messages">0</b> {story.hud.messages}</span>
+        <span class="hud__n"><b data-count="records">0</b> {story.hud.records}</span>
+        <span class="hud__n hud__n--amber"><b data-count="decisions">0</b> {story.hud.decisions}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="story__beats wrap">
+    <div class="beat beat--hero" data-beat="0">
+      <Headline as="h1" id="hero-title" lines={hero.headline} class="hero__title" />
+      <p class="hero__sub">{hero.subline}</p>
+      <div class="hero__actions">
+        <a class="btn btn--lg" href="#contact" data-scroll>{hero.cta}<span class="btn__arrow" aria-hidden="true">↓</span></a>
+      </div>
+      <p class="hero__hint"><span class="hero__hint-dot" aria-hidden="true"></span>{hero.hint}</p>
+      <p class="hero__alert" aria-live="polite">
+        <span class="hero__flag" aria-hidden="true"></span><span data-alert></span><span class="caret" aria-hidden="true"></span>
+      </p>
+    </div>
+
+    {story.beats.map((b, i) => (
+      <article class:list={['beat', { 'beat--open': !('msg' in b) || i === story.beats.length - 1 }]} data-beat={i + 1} data-msg={'msg' in b ? b.msg : undefined}>
+        <div class="beat__card">
+          <p class="beat__when">
+            <span class="beat__time">{b.time}</span>
+            {'who' in b && <span class="beat__who">{b.who}</span>}
+          </p>
+          {i === 0 ? <h2 class="beat__title" id="story-title">{b.title}</h2> : <h3 class="beat__title">{b.title}</h3>}
+          {'body' in b && <p class="beat__body">{b.body}</p>}
+          {'without' in b && (
+            <p class="beat__without"><span class="beat__tag">{story.without}</span>{b.without}</p>
+          )}
+          {'decision' in b && (
+            <p class:list={['beat__decision', { 'beat__decision--ok': i === 1 }]}>
+              <span class="beat__tag beat__tag--with">{story.with}</span>
+              <span class="beat__type" data-decision={b.decision} aria-hidden="true"></span><span class="sr-only">{b.decision}</span>
+            </p>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+</section>

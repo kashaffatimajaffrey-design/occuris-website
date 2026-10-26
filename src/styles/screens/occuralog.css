@@ -1,0 +1,284 @@
+.occ {
+  display: flex;
+  align-items: center;
+}
+.occ__grid {
+  align-items: center;
+  row-gap: var(--s5);
+}
+.occ__text {
+  grid-column: 1 / span 5;
+}
+.occ__title {
+  font-size: var(--t-h1);
+  line-height: 1;
+}
+.occ__body {
+  margin-top: var(--s3);
+  max-width: 26em;
+  color: var(--ink-70);
+}
+.occ__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: var(--s4);
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--violet);
+  font-size: var(--t-body);
+  font-weight: 500;
+  cursor: pointer;
+}
+.occ__toggle:hover [data-label] {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.occ__toggle-icon {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+.occ__toggle-icon::before,
+.occ__toggle-icon::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 50%;
+  height: 1px;
+  margin-top: -0.5px;
+  background: currentColor;
+  transition: transform 220ms var(--ease-out);
+}
+.occ__toggle-icon::after {
+  transform: rotate(90deg);
+}
+.occ__toggle[aria-expanded='true'] .occ__toggle-icon::after {
+  transform: rotate(0deg);
+}
+
+.record {
+  margin-top: var(--s2);
+  max-width: 30em;
+  border: var(--rule);
+  border-radius: var(--radius);
+  font-size: var(--t-label);
+}
+.record__title {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--ink-12);
+  color: var(--ink-60);
+  font-size: var(--t-micro);
+}
+.record__list {
+  padding: 6px 0;
+}
+.record__row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 12px;
+  padding: 4px 14px;
+}
+.record__row dt {
+  color: var(--ink-60);
+}
+.record__row dd {
+  color: var(--ink);
+}
+.js .record__row {
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 260ms var(--ease-out),
+    transform 260ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 45ms);
+}
+.js .record.is-open .record__row {
+  opacity: 1;
+  transform: none;
+}
+
+/* One frame holds the canvas, then the table that replaces it */
+.occ__frame {
+  grid-column: 6 / span 7;
+  /* Tall enough for the eight rows and the status line, no taller */
+  height: min(60vh, 460px);
+  min-height: 440px;
+  border: var(--rule);
+  background: var(--paper);
+  overflow: hidden;
+}
+.occ__frame canvas {
+  position: absolute;
+  inset: 0;
+  transition: opacity 400ms linear;
+}
+.occ__frame.is-table canvas {
+  opacity: 0;
+  pointer-events: none;
+}
+.occ__table-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms linear;
+}
+.occ__frame.is-table .occ__table-wrap,
+.occ__frame.is-fallback .occ__table-wrap,
+.no-motion .occ__table-wrap,
+html:not(.js) .occ__table-wrap {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* The table is this piece's real fallback */
+.no-motion .occ__frame .fallback,
+.occ__frame.is-fallback .fallback {
+  display: none;
+}
+.occ__table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+}
+.occ__table th {
+  height: 40px;
+  padding: 0 8px;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: var(--t-label);
+  font-weight: 500;
+  color: var(--ink-60);
+  border-bottom: 1px solid var(--ink-20);
+}
+.occ__table td {
+  height: 40px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--ink-12);
+  line-height: 1.25;
+  vertical-align: middle;
+}
+.occ__table .c {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.occ__table tbody tr {
+  transition: background-color 120ms;
+}
+.occ__table tbody tr:hover {
+  background: var(--ink-06);
+}
+/* Message column first and wider: 3 of 12 */
+.occ__table th:nth-child(1) { width: 25%; }
+.occ__table th:nth-child(2) { width: 14%; }
+.occ__table th:nth-child(3) { width: 6%; }
+.occ__table th:nth-child(4) { width: 14%; }
+.occ__table th:nth-child(5) { width: 14%; }
+.occ__table th:nth-child(6) { width: 12%; }
+.occ__table th:nth-child(7) { width: 15%; }
+/* After the hand-off the parsed fields fill in row by row, after the raw message */
+.occ__frame[data-cascade] tbody td:not(.col-msg) {
+  opacity: 0;
+  transition: opacity 260ms linear;
+  transition-delay: calc(300ms + var(--r, 0) * 110ms + var(--c, 0) * 45ms);
+}
+.occ__frame[data-cascade].is-table tbody td {
+  opacity: 1;
+}
+.occ__table td:nth-child(2) { --c: 1; }
+.occ__table td:nth-child(3) { --c: 2; }
+.occ__table td:nth-child(4) { --c: 3; }
+.occ__table td:nth-child(5) { --c: 4; }
+.occ__table td:nth-child(6) { --c: 5; }
+.occ__table td:nth-child(7) { --c: 6; }
+.occ__table .quiet {
+  color: var(--ink-60);
+}
+.flag {
+  color: var(--ink-60);
+}
+.flag--on {
+  color: var(--ink);
+}
+.flag--on::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  background: var(--amber);
+  vertical-align: 1px;
+}
+.conf {
+  margin-left: 2px;
+  white-space: nowrap;
+  font-size: 11px;
+  color: var(--ink-60);
+}
+
+.occ__foot {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  pointer-events: none;
+}
+.occ__foot > * {
+  pointer-events: auto;
+}
+.occ__status {
+  font-size: var(--t-micro);
+  color: var(--ink-60);
+  opacity: 0;
+  transition: opacity 400ms linear;
+}
+.occ__frame.is-table .occ__status,
+.occ__frame.is-fallback .occ__status,
+.no-motion .occ__status {
+  opacity: 1;
+}
+.occ__replay {
+  flex: none;
+  padding: 6px 10px;
+  border: 1px solid var(--ink-20);
+  border-radius: var(--radius);
+  background: var(--paper);
+  font-family: var(--font-mono);
+  font-size: var(--t-micro);
+  color: var(--ink-60);
+  cursor: pointer;
+  transition:
+    color 150ms,
+    border-color 150ms;
+}
+.occ__replay:hover {
+  color: var(--ink);
+  border-color: var(--ink-60);
+}
+
+@media (max-width: 959px) {
+  .occ__text,
+  .occ__frame {
+    grid-column: 1 / -1;
+  }
+  .occ__frame {
+    height: 50vh;
+    min-height: 400px;
+  }
+}

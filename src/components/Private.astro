@@ -1,0 +1,27 @@
+---
+import Headline from './Headline.astro';
+import { privateScreen, fallbackAlt } from '../content/copy';
+import '../styles/screens/private.css';
+---
+<section class="screen screen--night priv" id="private" data-screen="night" aria-labelledby="priv-title">
+  <div class="wrap grid priv__grid">
+    <div class="priv__text">
+      <Headline id="priv-title" lines={privateScreen.headline} class="priv__title" />
+      <p class="priv__body" data-reveal>
+        {privateScreen.body.map((s) => <span>{s} </span>)}
+      </p>
+    </div>
+
+    <div class="priv__frame stage" data-piece="building" data-labels={JSON.stringify(privateScreen.scene)}>
+      <p class="priv__label mono" aria-hidden="true">{privateScreen.frameLabel}</p>
+      <span class="priv__tick priv__tick--tl" aria-hidden="true"></span>
+      <span class="priv__tick priv__tick--tr" aria-hidden="true"></span>
+      <span class="priv__tick priv__tick--bl" aria-hidden="true"></span>
+      <span class="priv__tick priv__tick--br" aria-hidden="true"></span>
+      <div class="priv__viewport">
+        <canvas role="img" aria-label={privateScreen.canvasLabel}></canvas>
+        <img class="fallback" src="/fallbacks/building.png" alt={fallbackAlt.building} loading="lazy" decoding="async" />
+      </div>
+    </div>
+  </div>
+</section>

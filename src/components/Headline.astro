@@ -1,0 +1,22 @@
+---
+// Splits a headline into word spans so scripts/type.ts can shift the weight
+// of each word as the pointer comes near. Lines render on their own row.
+interface Props {
+  as?: 'h1' | 'h2';
+  lines: string | string[];
+  class?: string;
+  id?: string;
+}
+const { as: Tag = 'h2', lines, class: className = '', id } = Astro.props;
+const rows = Array.isArray(lines) ? lines : [lines];
+---
+<Tag class:list={['weighted', className]} id={id}>
+  {rows.map((row, i) => (
+    <span class="line">
+      {row.split(' ').map((word, j, all) => (
+        <Fragment><span class="w">{word}</span>{j < all.length - 1 ? ' ' : ''}</Fragment>
+      ))}
+      {i < rows.length - 1 ? ' ' : ''}
+    </span>
+  ))}
+</Tag>

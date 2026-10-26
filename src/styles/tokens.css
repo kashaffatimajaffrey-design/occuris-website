@@ -1,0 +1,131 @@
+/* The whole design system. No hex value appears in any other stylesheet. */
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-variable.woff2') format('woff2');
+  font-weight: 300 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/geist-variable.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Metric-matched fallbacks so the swap does not shift the layout. */
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Georgia'), local('Times New Roman');
+  size-adjust: 104%;
+  ascent-override: 92%;
+  descent-override: 24%;
+}
+@font-face {
+  font-family: 'Geist Fallback';
+  src: local('Arial'), local('Roboto'), local('Helvetica');
+  size-adjust: 104%;
+  ascent-override: 90%;
+  descent-override: 22%;
+}
+
+:root {
+  /* Colour (PRD section 5) */
+  --paper: #F4F1EC;
+  --ink: #2B1D4F;
+  --violet: #6E4DC9;
+  --amber: #E8A317;
+  --night: #110C1F;
+  --mist: #C9BFE3;
+
+  /* Illustration palette: the map, the building, the diagrams. Never used for text. */
+  --sea: #3D7BE0;
+  --sea-deep: #2C5FB8;
+  --sea-foam: #8DB6F2;
+  --land: #EDE3D1;
+  --land-side: #D2BF9C;
+  --land-dark: #B9A27A;
+  --road: #CBB894;
+  --field: #E3D6B8;
+  --leaf: #7DB07A;
+  --leaf-dark: #5E9160;
+  --brick: #C8775A;
+  --steel: #A9B1C2;
+  --teal: #3E9E9A;
+  --white: #FFFFFF;
+  --violet-soft: #E6DEFA;
+  --amber-soft: #FBEBC4;
+
+  /* Derived: the only opacity steps the page uses */
+  --ink-70: color-mix(in srgb, var(--ink) 70%, transparent);
+  --ink-60: color-mix(in srgb, var(--ink) 60%, transparent);
+  --ink-20: color-mix(in srgb, var(--ink) 20%, transparent);
+  --ink-12: color-mix(in srgb, var(--ink) 12%, transparent);
+  --ink-06: color-mix(in srgb, var(--ink) 6%, transparent);
+  --mist-30: color-mix(in srgb, var(--mist) 30%, transparent);
+  --mist-12: color-mix(in srgb, var(--mist) 12%, transparent);
+  --paper-40: color-mix(in srgb, var(--paper) 40%, transparent);
+  --paper-92: color-mix(in srgb, var(--paper) 92%, transparent);
+  --night-92: color-mix(in srgb, var(--night) 92%, transparent);
+  --violet-deep: color-mix(in srgb, var(--violet) 82%, var(--ink));
+
+  /* Type */
+  --font-serif: 'Fraunces', 'Fraunces Fallback', Georgia, serif;
+  --font-sans: 'Geist', 'Geist Fallback', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  --t-display: 88px;
+  --t-h1: 64px;
+  --t-h2: 56px;
+  --t-stat: 72px;
+  --t-h3: 40px;
+  --t-lead: 22px;
+  --t-body: 18px;
+  --t-ui: 15px;
+  --t-small: 14px;
+  --t-label: 13px;
+  --t-micro: 12px;
+
+  /* Space: 8 px rhythm */
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 40px;
+  --s6: 48px;
+  --s8: 64px;
+  --s12: 96px;
+
+  /* Layout */
+  --max: 1200px;
+  --gutter: 24px;
+  --pad: 24px;
+  --nav-h: 64px;
+  --radius: 4px;
+  --rule: 1px solid var(--ink-20);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (max-width: 959px) {
+  :root {
+    --t-display: 48px;
+    --t-h1: 40px;
+    --t-h2: 36px;
+    --t-stat: 48px;
+    --t-h3: 32px;
+    --t-lead: 18px;
+    --t-body: 17px;
+    --gutter: 16px;
+    --pad: 16px;
+  }
+}

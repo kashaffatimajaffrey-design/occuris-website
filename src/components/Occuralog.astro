@@ -1,0 +1,84 @@
+---
+import Headline from './Headline.astro';
+import { occuralog, fallbackAlt } from '../content/copy';
+import { sampleRows } from '../content/sample-rows';
+import '../styles/screens/occuralog.css';
+const first = sampleRows[0];
+const k = occuralog.recordKeys;
+const record: [string, string, boolean?][] = [
+  [k.source, first.message, true],
+  [k.item, first.item],
+  [k.qty, first.qty],
+  [k.from, first.from],
+  [k.vehicle, first.vehicle],
+  [k.eta, first.eta],
+  [k.delay, first.delay],
+  [k.confidence, first.confidence],
+];
+const avg = sampleRows.reduce((s, r) => s + Number(r.confidence), 0) / sampleRows.length;
+const statusLine = occuralog.status.replace('{n}', String(sampleRows.length)).replace('{avg}', avg.toFixed(2));
+const quiet = (v: string) => v === '0' || v === 'n/a';
+---
+<section class="screen occ" id="occuralog" data-screen="paper" aria-labelledby="occ-title">
+  <div class="wrap grid occ__grid">
+    <div class="occ__text">
+      <p class="tag"><span class="tag__ring" aria-hidden="true"></span>{occuralog.eyebrow}</p>
+      <Headline id="occ-title" lines={occuralog.headline} class="occ__title" />
+      <p class="occ__body" data-reveal>{occuralog.body}</p>
+      <button
+        class="occ__toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="occ-record"
+        data-record-toggle
+        data-open={occuralog.recordOpen}
+        data-close={occuralog.recordClose}
+      >
+        <span class="occ__toggle-icon" aria-hidden="true"></span><span data-label>{occuralog.recordOpen}</span>
+      </button>
+      <div class="record" id="occ-record" hidden>
+        <p class="record__title mono">{occuralog.recordTitle}</p>
+        <dl class="record__list mono">
+          {record.map(([key, value, ur], i) => (
+            <div class="record__row" style={`--i:${i}`}>
+              <dt>{key}</dt>
+              <dd lang={ur ? 'ur' : undefined}>{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+
+    <div class="occ__frame stage" data-piece="flow">
+      <canvas role="img" aria-label={occuralog.canvasLabel}></canvas>
+      <img class="fallback" src="/fallbacks/flowfield.png" alt={fallbackAlt.flow} loading="lazy" decoding="async" />
+      <div class="occ__table-wrap" data-table>
+        <table class="occ__table">
+          <caption class="sr-only">{occuralog.tableCaption}</caption>
+          <thead>
+            <tr>{occuralog.columns.map((c) => <th scope="col">{c}</th>)}</tr>
+          </thead>
+          <tbody>
+            {sampleRows.map((r, i) => (
+              <tr style={`--r:${i}`}>
+                <td class="col-msg" lang="ur" title={r.message}><span class="c">{r.message}</span></td>
+                <td><span class="c">{r.item}</span></td>
+                <td class:list={[{ quiet: quiet(r.qty) }]}><span class="c">{r.qty}</span></td>
+                <td><span class="c">{r.from}</span></td>
+                <td class:list={[{ quiet: quiet(r.vehicle) }]}><span class="c">{r.vehicle}</span></td>
+                <td class:list={[{ quiet: quiet(r.eta) }]}><span class="c">{r.eta}</span></td>
+                <td class="col-flag">
+                  <span class="c"><span class:list={['flag', { 'flag--on': !quiet(r.delay) }]}>{r.delay}</span> <span class="conf">{r.confidence}</span></span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="occ__foot">
+        <p class="occ__status mono" aria-hidden="true">{statusLine}</p>
+        <button class="occ__replay" type="button" data-replay hidden>{occuralog.replay}</button>
+      </div>
+    </div>
+  </div>
+</section>

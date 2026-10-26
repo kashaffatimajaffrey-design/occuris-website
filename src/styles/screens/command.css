@@ -1,0 +1,228 @@
+.cmd {
+  display: flex;
+  align-items: center;
+}
+.cmd__inner {
+  display: flex;
+  flex-direction: column;
+}
+.cmd__head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-items: end;
+}
+.cmd__head .tag {
+  grid-column: 1 / -1;
+}
+.cmd__title {
+  grid-column: 1 / span 7;
+  font-size: var(--t-h1);
+  line-height: 1.02;
+  color: var(--paper);
+}
+.cmd__body {
+  grid-column: 9 / span 4;
+  color: var(--mist);
+  text-wrap: pretty;
+}
+
+/* ---------- the diagram ---------- */
+.cmd__diagram {
+  margin-top: var(--s6);
+  width: 100%;
+}
+.flow {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.flow .edge {
+  fill: none;
+  stroke: var(--mist);
+  stroke-opacity: 0.22;
+  stroke-width: 1.25;
+}
+.flow .edge--in {
+  stroke-dasharray: 3 5;
+}
+.flow .edge.is-alert {
+  stroke: var(--amber);
+  stroke-opacity: 0.7;
+}
+.flow .pk--in {
+  fill: var(--violet);
+}
+.flow .pk--core {
+  fill: var(--mist);
+}
+.flow .pk--out {
+  fill: var(--paper);
+}
+.flow .pk--amber {
+  fill: var(--amber);
+}
+.flow .node rect {
+  fill: var(--night);
+  stroke: var(--mist);
+  stroke-opacity: 0.4;
+  stroke-width: 1;
+}
+.flow .node text {
+  fill: var(--paper);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+.flow .node--src text,
+.flow .node--out text {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 13px;
+  fill: var(--mist);
+}
+.flow .node--out rect {
+  stroke: var(--paper);
+  stroke-opacity: 0.6;
+}
+.flow .node--agent .light {
+  fill: var(--violet);
+  transition: fill 300ms;
+}
+.flow .node--agent rect {
+  transition:
+    stroke 300ms,
+    stroke-opacity 300ms;
+}
+.flow .node--agent.is-alert rect {
+  stroke: var(--amber);
+  stroke-opacity: 1;
+}
+.flow .node--agent.is-alert .light {
+  fill: var(--amber);
+  animation: blink-light 0.8s steps(1) infinite;
+}
+@keyframes blink-light {
+  50% {
+    fill-opacity: 0.2;
+  }
+}
+.flow .core__halo {
+  fill: none;
+  stroke: var(--violet);
+  stroke-opacity: 0.35;
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin 24s linear infinite;
+}
+.flow .core__ring {
+  fill: var(--night);
+  stroke: var(--violet);
+  stroke-width: 8;
+}
+.flow .core__arc {
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: 8;
+  stroke-dasharray: 18 400;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin 3.2s linear infinite;
+}
+.flow .node--core text {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 13px;
+  fill: var(--mist);
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- the log under it ---------- */
+.log {
+  margin-top: var(--s5);
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--mist-30);
+  border-radius: var(--radius);
+  min-height: 92px;
+}
+.log__prev {
+  min-height: 1.5em;
+  font-size: var(--t-micro);
+  color: var(--mist);
+  opacity: 0.45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.log__now {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--s2);
+  margin-top: 6px;
+  font-size: var(--t-small);
+  line-height: 1.5;
+}
+.log__meta {
+  color: var(--mist);
+  opacity: 0.75;
+  font-size: var(--t-micro);
+  line-height: 1.75;
+}
+.log__line {
+  color: var(--paper);
+  min-height: 3em;
+}
+.log__line .k {
+  color: var(--amber);
+}
+.log__caret {
+  display: inline-block;
+  width: 7px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--mist);
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 959px) {
+  .cmd__title,
+  .cmd__body {
+    grid-column: 1 / -1;
+  }
+  .cmd__body {
+    margin-top: var(--s3);
+  }
+  .log__now {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .flow .node text {
+    font-size: 12px;
+  }
+  .flow .node--src text,
+  .flow .node--out text,
+  .flow .node--core text {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow .core__halo,
+  .flow .core__arc {
+    animation: none;
+  }
+}

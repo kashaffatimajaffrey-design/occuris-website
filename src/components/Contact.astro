@@ -1,0 +1,75 @@
+---
+import { proof, contact, links, footer, nav } from '../content/copy';
+import '../styles/screens/contact.css';
+// The address opens a Gmail compose window in a new tab, which works for anyone
+// signed in to Gmail even without a desktop mail app; mailto is the fallback.
+const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(contact.email)}&su=${encodeURIComponent(contact.emailSubject)}`;
+const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(contact.emailSubject)}`;
+---
+<section class="screen contact" id="contact" data-screen="paper" aria-labelledby="contact-title">
+  <div class="wrap">
+    <h2 class="proof__title" id="contact-title">
+      {proof.headline.map((part, i) => (
+        <span class="proof__part">
+          {part}<a class="fn" href={`#note-${i + 1}`} aria-label={`Note ${i + 1}`}>{i + 1}</a>
+        </span>
+      ))}
+    </h2>
+
+    <div class="grid proof__body">
+      <p class="proof__pilot" data-reveal>{proof.pilot}</p>
+      <ol class="notes" data-reveal>
+        {proof.notes.map((n, i) => (
+          <li id={`note-${i + 1}`}><span class="notes__n">{i + 1}</span>{n}</li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="grid letter">
+      <div class="letter__pitch">
+        <h3 class="letter__heading">{proof.workHeading}</h3>
+        <p>{proof.custom}</p>
+        <p>{proof.echo}</p>
+      </div>
+      <dl class="letter__lines">
+        <div class="letter__line">
+          <dt>{proof.contactLabels.email}</dt>
+          <dd>
+            <a class="big plausible-event-name=Email+Click" href={gmail} target="_blank" rel="noopener">{contact.email}<span class="sr-only"> {footer.newTab}</span></a>
+            <a class="line__alt plausible-event-name=Email+Click" href={mailto}>{proof.mailApp}</a>
+          </dd>
+        </div>
+        <div class="letter__line">
+          <dt>{proof.contactLabels.office}</dt>
+          <dd class="line__plain">{contact.office}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <h3 class="sr-only">{proof.teamHeading}</h3>
+    <ul class="masthead" role="list">
+      {proof.team.map((p) => (
+        <li class="person">
+          <p class="person__name">{p.name}</p>
+          <p class="person__role">{p.role}</p>
+          {p.linkedin && (
+            <a class="person__link" href={p.linkedin} target="_blank" rel="noopener">
+              {proof.teamLink}<span class="sr-only"> {p.name} {footer.newTab}</span>
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <footer class="foot">
+    <div class="wrap foot__inner">
+      <a class="foot__brand" href="#top" aria-label={nav.home} data-scroll>
+        <img src="/logo-ink.svg" width="24" height="24" alt="" />
+      </a>
+      {links.github && <a href={links.github} target="_blank" rel="noopener" class="plausible-event-name=GitHub+Click">{footer.github}<span class="sr-only"> {footer.newTab}</span></a>}
+      {links.linkedin && <a href={links.linkedin} target="_blank" rel="noopener">{footer.linkedin}<span class="sr-only"> {footer.newTab}</span></a>}
+      <p class="foot__copy">{footer.copyright}</p>
+    </div>
+  </footer>
+</section>

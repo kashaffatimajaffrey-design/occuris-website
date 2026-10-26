@@ -1,0 +1,33 @@
+---
+import Headline from './Headline.astro';
+import { command } from '../content/copy';
+import '../styles/screens/command.css';
+---
+<section class="screen screen--night cmd" id="command" data-screen="night" aria-labelledby="cmd-title">
+  <div class="wrap cmd__inner">
+    <div class="cmd__head">
+      <p class="tag"><span class="tag__ring" aria-hidden="true"></span>{command.eyebrow}</p>
+      <Headline id="cmd-title" lines={command.headline} class="cmd__title" />
+      <p class="cmd__body" data-reveal>{command.body}</p>
+    </div>
+
+    <div
+      class="cmd__diagram"
+      data-piece="flow-diagram"
+      data-flow={JSON.stringify({ sources: command.sources, agents: command.agents, outputs: command.outputs, core: command.core, feeds: command.feeds })}
+      role="img"
+      aria-label={command.diagramLabel}
+    ></div>
+
+    <div class="log" data-strip data-alerts={JSON.stringify(command.alerts)} data-tz={command.timezone} data-tz-label={command.timezoneLabel}>
+      <p class="log__prev mono" data-strip-prev aria-hidden="true"></p>
+      <p class="log__now mono">
+        <span class="log__meta"><span data-strip-time>--:--:--</span> <span data-strip-agent></span></span>
+        <span class="log__line"><span data-strip-text></span><span class="log__caret" aria-hidden="true"></span></span>
+      </p>
+    </div>
+    <ul class="sr-only">
+      {command.alerts.map((a) => <li>{a.text}</li>)}
+    </ul>
+  </div>
+</section>
