@@ -11,7 +11,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "deploy": "astro build && npx --yes wrangler@4 pages deploy dist --project-name occuris --branch main"
   },
   "dependencies": {
     "astro": "5.18.2",

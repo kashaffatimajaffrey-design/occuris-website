@@ -21,19 +21,18 @@ pnpm build && pnpm preview   # http://localhost:4322
 - `src/styles/tokens.css`: colours, type, spacing. No hex values anywhere else in the CSS.
 - `public/_headers`: caching and security headers, honoured by Cloudflare.
 
-## Deploy on Cloudflare (Workers)
+## Deploy
 
-The site is plain static files served by Workers static assets. `wrangler.jsonc` points Cloudflare at `./dist`.
+The live site is the Cloudflare Pages project `occuris`: **https://occuris.pages.dev**. It is deployed from a computer, not built by Cloudflare from GitHub:
 
-1. In Cloudflare: Workers & Pages → Create → Import a repository → pick `occuris-website`.
-2. Build command: `pnpm run build`. Deploy command: `npx wrangler deploy`.
-3. Advanced settings → Build variables:
-   - `NODE_VERSION` = `22`
-   - `PNPM_VERSION` = `11.9.0`
-   - `SITE_URL` = the address people will visit, for example `https://occuris-website.YOUR-SUBDOMAIN.workers.dev` until the domain is live, then `https://occuris.ai`. It sets the canonical URL, the link-preview image, robots.txt and the sitemap.
-4. Deploy. Every push to `main` redeploys.
+```
+npx wrangler login     # once per computer
+pnpm run deploy        # builds, then uploads dist/ to occuris.pages.dev
+```
 
-For the custom domain: the Worker → Settings → Domains & Routes → add `occuris.ai`, then change `SITE_URL` to match and redeploy.
+`SITE_URL` sets the canonical URL, the link-preview image, robots.txt and the sitemap. It defaults to `https://occuris.pages.dev`; once a custom domain is attached (Pages project → Custom domains), build with `SITE_URL=https://your-domain` or change the default in `astro.config.mjs`.
+
+`wrangler.jsonc` is for the separate Worker copy (`occuris-website.kash-fatima7.workers.dev`), which serves the same files with Workers static assets.
 
 ## Checks
 
