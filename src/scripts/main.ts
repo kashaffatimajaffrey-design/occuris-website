@@ -739,10 +739,10 @@ if (sysFig && storyEl && !reduce) {
   const esc = (t: string) => t.replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]!);
   const become = async (kind: string, html: string) => {
     const old = tokCard.querySelector('.tok__in');
-    if (old) await old.animate([{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(0.6)', opacity: 0 }], { duration: 160, easing: 'ease-in' }).finished;
+    if (old) await old.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: 'ease-in' }).finished;
     tok.className = `tok tok--${kind} is-on`;
     tokCard.innerHTML = `<span class="tok__in">${html}</span>`;
-    tokCard.querySelector('.tok__in')!.animate([{ transform: 'scale(0.6)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 360, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
+    tokCard.querySelector('.tok__in')!.animate([{ transform: 'translateY(3px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 280, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
   };
   const narrate = (time: string, line: string) => {
     textEl.classList.add('is-swap');

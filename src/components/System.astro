@@ -25,17 +25,18 @@ const wIn = inY.map((y) => `M${W.inX + W.pillW / 2},${y} C190,${y} 200,${W.cy} $
 const wOut = outY.map((y) => `M${W.xs[2] + W.boxW},${W.cy} C1030,${W.cy} 1024,${y} ${W.outX - W.pillW / 2 - 4},${y}`);
 const wideDot = `M${W.inX + W.pillW / 2},${inY[1]} C190,${inY[1]} 200,${W.cy} ${W.xs[0]},${W.cy} L${W.xs[2] + W.boxW},${W.cy} C1030,${W.cy} 1024,${outY[0]} ${W.outX - W.pillW / 2},${outY[0]}`;
 
-// ---- tall: 360 x 720 ----
-const T = { boxW: 260, boxH: 96, cx: 180, ys: [178, 336, 494], pillW: 150, pillH: 30 };
+// ---- tall: 360 x 600 ----
+const T = { boxW: 220, boxH: 72, cx: 180, ys: [170, 286, 402], pillW: 150, pillH: 30, outY: 560 };
+const tBottom = T.ys[2] + T.boxH;
 const tallIn = inputs.map((_, i) => [i % 2 ? 268 : 92, 40 + Math.floor(i / 2) * 44] as const);
-const tallOut = outputs.map((_, i) => [62 + i * 118, 672] as const);
+const tallOut = outputs.map((_, i) => [62 + i * 118, T.outY] as const);
 const tIn = tallIn.map(([x, y]) => `M${x},${y + T.pillH / 2} C${x},140 ${T.cx},140 ${T.cx},${T.ys[0]}`);
-const tOut = tallOut.map(([x, y]) => `M${T.cx},${T.ys[2] + T.boxH} C${T.cx},630 ${x},620 ${x},${y - T.pillH / 2 - 3}`);
-const tallDot = `M${tallIn[0][0]},${tallIn[0][1] + T.pillH / 2} C${tallIn[0][0]},140 ${T.cx},140 ${T.cx},${T.ys[0]} L${T.cx},${T.ys[2] + T.boxH} C${T.cx},630 ${tallOut[0][0]},620 ${tallOut[0][0]},${tallOut[0][1] - T.pillH / 2}`;
+const tOut = tallOut.map(([x, y]) => `M${T.cx},${T.ys[2] + T.boxH} C${T.cx},${tBottom + 40} ${x},${y - 50} ${x},${y - T.pillH / 2 - 3}`);
+const tallDot = `M${tallIn[0][0]},${tallIn[0][1] + T.pillH / 2} C${tallIn[0][0]},140 ${T.cx},140 ${T.cx},${T.ys[0]} L${T.cx},${tBottom} C${T.cx},${tBottom + 40} ${tallOut[0][0]},${T.outY - 50} ${tallOut[0][0]},${tallOut[0][1] - T.pillH / 2}`;
 
 const layouts = [
   { id: 'w', cls: 'sys__svg--wide', box: '0 0 1200 400', inPaths: wIn, outPaths: wOut, dot: wideDot },
-  { id: 't', cls: 'sys__svg--tall', box: '0 0 360 720', inPaths: tIn, outPaths: tOut, dot: tallDot },
+  { id: 't', cls: 'sys__svg--tall', box: '0 0 360 600', inPaths: tIn, outPaths: tOut, dot: tallDot },
 ];
 ---
 <section class="screen sys" id="system" data-screen="paper" aria-labelledby="sys-title">
@@ -90,14 +91,15 @@ const layouts = [
             const bw = L.id === 'w' ? W.boxW : T.boxW;
             const bh = L.id === 'w' ? W.boxH : T.boxH;
             const pos = L.id === 'w' ? `translate(${W.xs[i]} ${W.cy - W.boxH / 2})` : `translate(${T.cx - T.boxW / 2} ${T.ys[i]})`;
-            const nameY = L.id === 'w' ? (i === 1 ? 44 : 52) : i === 1 ? 36 : 42;
+            const nameY = L.id === 'w' ? (i === 1 ? 44 : 52) : i === 1 ? 26 : 32;
+            const gap = L.id === 'w' ? 26 : 19;
             return (
               <g class="sys__node sys__box" data-node={partKeys[i]} transform={pos} tabindex="0" role="button" aria-label={label(partKeys[i])} aria-expanded="false">
                 <g class="sys__lift">
                   <rect width={bw} height={bh} rx="8" />
                   <text class="sys__name" x={bw / 2} y={nameY}>{p.name}</text>
-                  <text class="sys__line" x={bw / 2} y={nameY + 26}>{p.line}</text>
-                  {i === 1 && [0, 1, 2, 3, 4, 5].map((k) => <circle class="sys__agent" data-agent={k} cx={bw / 2 - 40 + k * 16} cy={nameY + 50} r="3.5" />)}
+                  <text class="sys__line" x={bw / 2} y={nameY + gap}>{p.line}</text>
+                  {i === 1 && [0, 1, 2, 3, 4, 5].map((k) => <circle class="sys__agent" data-agent={k} cx={bw / 2 - 40 + k * 16} cy={nameY + gap * 1.9} r={L.id === 'w' ? 3.5 : 3} />)}
                   <text class="sys__more" x={bw - 14} y="22">+</text>
                 </g>
               </g>

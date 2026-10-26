@@ -127,9 +127,9 @@ export function init(host: HTMLElement, o: FlowOptions): FlowDiagram {
       out = o.outputs.map((_, i) => [62 + i * 118, 600]);
     }
     const k = o.keys;
-    src.forEach((p, i) => curve(p, core, [k.sources[i], k.core], 'in', -1, 0.9));
-    ag.forEach((p, i) => curve(core, p, [k.core, k.agents[i]], 'core', i, 0.5));
-    ag.forEach((p, i) => curve(p, out[o.feeds[i]], [k.agents[i], k.outputs[o.feeds[i]]], 'out', i, 0.35));
+    src.forEach((p, i) => curve(p, core, [k.sources[i], k.core], 'in', -1, 0.4));
+    ag.forEach((p, i) => curve(core, p, [k.core, k.agents[i]], 'core', i, 0.24));
+    ag.forEach((p, i) => curve(p, out[o.feeds[i]], [k.agents[i], k.outputs[o.feeds[i]]], 'out', i, 0.18));
 
     o.sources.forEach((s, i) => pill(src[i][0], src[i][1], s, 'node--src', k.sources[i], vertical ? 150 : undefined));
     // the core: the brand ring, turning slowly
@@ -158,7 +158,7 @@ export function init(host: HTMLElement, o: FlowOptions): FlowDiagram {
     }
     for (let i = packets.length - 1; i >= 0; i--) {
       const p = packets[i];
-      p.d += dt * (vertical ? 120 : 190);
+      p.d += dt * (vertical ? 46 : 72);
       if (p.d >= p.edge.len) {
         p.dot.remove();
         packets.splice(i, 1);
@@ -196,7 +196,7 @@ export function init(host: HTMLElement, o: FlowOptions): FlowDiagram {
       agentNodes.forEach((n, i) => n.classList.toggle('is-alert', i === alerting));
       for (const e of edges) e.path.classList.toggle('is-alert', e.agent === alerting && e.kind === 'out');
       // a faster stream while an agent is raising something
-      for (const e of edges) if (e.kind === 'out') e.rate = e.agent === alerting ? 1.6 : 0.35;
+      for (const e of edges) if (e.kind === 'out') e.rate = e.agent === alerting ? 0.7 : 0.18;
     },
     pause() {
       cancelAnimationFrame(raf);
