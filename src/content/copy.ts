@@ -15,13 +15,15 @@ export const links = {
   // organisation URL here when it does.
   github: '',
   linkedin: 'https://www.linkedin.com/company/occurisai/',
+  substack: 'https://kashaf00.substack.com/',
+  echoDemo: 'https://www.loom.com/share/6bd1cf3edd624f7abde12051eb732f79',
 };
 
 export const tagline =
   'AI agents for supply chain and operations teams, from ERP data to WhatsApp, deployed on your own servers.';
 
 export const meta = {
-  title: 'Occuris AI',
+  title: 'Occuris AI: AI agents for operations, supply chain and security, on your own servers',
   description: tagline,
   ogAlt: 'A supply chain drawn as a hanging chain of six nodes, with the Occuris tagline.',
 };
@@ -32,8 +34,10 @@ export const nav = {
   wordmark: 'Occuris',
   label: 'Main',
   links: [
+    { label: 'System', href: '#system' },
     { label: 'Occuralog', href: '#occuralog' },
     { label: 'Command', href: '#command' },
+    { label: 'Echo', href: '#echo' },
     { label: 'Private', href: '#private' },
     { label: 'Contact', href: '#contact' },
   ],
@@ -43,6 +47,7 @@ export const nav = {
 export const hero = {
   headline: ['Your operations run on WhatsApp.', 'Your decisions shouldn’t.'],
   subline: tagline,
+  sublineMore: 'Also built to order: security operations, voice interfaces and private AI for regulated teams.',
   cta: 'Talk to us',
   hint: 'Click a road on the map to block it, and watch Occuris work around it.', // DRAFT
   // The alert raised when each link of the chain breaks, Supplier to Customer (section 15).
@@ -86,6 +91,7 @@ export const messages = [
 // for the sample rows in section 15; confirm before launch.
 export const story = {
   label: 'One day in Karachi',
+  skip: 'Skip to products', // shown on phones only
   hud: { messages: 'messages read', records: 'records', decisions: 'decisions' },
   without: 'Without Occuris',
   with: 'Occuris',
@@ -156,9 +162,26 @@ export const story = {
       who: 'Warehouse A',
       msg: 7,
       title: 'Eight messages. Eight records. Six decisions.',
-      body: 'The last truck of cement leaves for Sukkur on time. Nobody re-typed anything, and nothing left the building. Tomorrow it starts again at 7:42.',
+      body: 'The last truck of cement leaves for Sukkur on time. Nobody re-typed anything, and nothing left the building. Every one of those six decisions is logged with the message that caused it. Tomorrow it starts again at 7:42.',
     },
   ],
+};
+
+export const system = {
+  eyebrow: 'One system, three parts',
+  headline: 'Read it. Decide it. Act on it.',
+  body: 'Occuralog reads what your team already writes, in Urdu, English or both. Command decides what to do about it and watches your supply chain around the clock. Echo lets anyone act on a decision in one spoken sentence. All three run on your own servers.',
+  inputs: ['WhatsApp', 'Spreadsheets', 'Email', 'ERP'],
+  parts: [
+    { name: 'Occuralog', line: 'messages to records' },
+    { name: 'Command', line: 'records to decisions' },
+    { name: 'Echo', line: 'decisions to actions, by voice' },
+  ],
+  outputs: ['Alerts', 'Approvals', 'Reports'],
+  frame: 'YOUR SERVERS',
+  note: 'Each part works alone. Together they close the loop between a message and a decision.',
+  diagramLabel:
+    'WhatsApp, spreadsheets, email and ERP flow into Occuralog, which turns messages into records; Command turns records into decisions; Echo turns decisions into actions by voice. Out come alerts, approvals and reports. All of it sits inside your servers.',
 };
 
 export const occuralog = {
@@ -190,6 +213,11 @@ export const command = {
   eyebrow: 'Occuris Command',
   headline: 'Six agents watching your supply chain so you don’t have to.',
   body: 'Procurement, inventory, supplier risk, compliance, forecasting and reporting, reasoning across your data in real time, and flagging risk before it becomes a delay.',
+  outcomes: [
+    'Flags the late shipment before the line stops.',
+    'Finds two alternate suppliers when a price jumps.',
+    'Raises the reorder before the shelf is empty.',
+  ],
   agents: ['Procurement', 'Inventory', 'Supplier risk', 'Compliance', 'Forecasting', 'Reporting'],
   // The flow diagram: where data comes from, the hub, where decisions go
   sources: ['WhatsApp', 'Spreadsheets', 'Email', 'ERP'],
@@ -209,6 +237,28 @@ export const command = {
   timezoneLabel: 'PKT',
 };
 
+export const echo = {
+  eyebrow: 'Occuris Echo',
+  headline: 'Approve it with your voice.',
+  body: 'Echo is a voice-first agent. Say one sentence and it acts across email, calendar, Slack and spreadsheets: approve the reorder, reply to the supplier, move the meeting. It was built first for people who cannot easily use a keyboard or a screen. It turns out to be useful to anyone whose hands are full.',
+  points: [
+    'Asks before anything irreversible. No message is sent without your yes.',
+    'Reports what actually happened, not what it intended to do.',
+    '57 of 57 known-answer tests passed, with zero silent failures.',
+  ],
+  demo: 'Watch the 90-second demo',
+  listening: 'Listening',
+  heard: 'Heard',
+  said: '“Approve the 400 carton reorder and tell Ahmed it ships Thursday.”',
+  steps: [
+    { time: '20:06:02', text: 'Found reorder #R-2231, 400 cartons, Warehouse A' },
+    { time: '20:06:03', text: 'Drafted WhatsApp to Ahmed, dispatch: “Reorder approved, ships Thu”' },
+    { time: '20:06:03', text: 'Awaiting your approval to send', wait: true },
+  ],
+  cardLabel:
+    'A transcript: someone says “Approve the 400 carton reorder and tell Ahmed it ships Thursday.” Echo finds the reorder, drafts the WhatsApp to Ahmed, and waits for approval before sending.',
+};
+
 export const privateScreen = {
   headline: 'Nothing leaves your building.',
   body: [
@@ -216,6 +266,7 @@ export const privateScreen = {
     'Every decision logged and auditable.',
     'Built for companies that cannot send their data to someone else’s cloud.',
   ],
+  models: 'Local models or Claude, your choice.',
   frameLabel: 'YOUR SERVERS',
   // Labels inside the drawing
   scene: { cloud: 'someone else’s cloud', model: 'local model', log: 'audit log' },
@@ -235,15 +286,41 @@ export const proof = {
   pilot:
     'Our first pilot ran Occuris Command for an import and export business across countries and time zones: stock, lead times, end-of-life parts and supply-risk news, with every answer cited.',
   workHeading: 'Work with us',
-  custom: 'We also build custom AI on the tools you already use, including security operations on existing SIEM platforms.',
-  echo: 'Occuris Echo is a voice-first agent for people who cannot easily use a keyboard or screen.',
+  workIntro:
+    'The three products are the start. Most clients need them shaped to their own tools, data and rules. We build that, on your infrastructure, with you owning the code.',
+  forLabel: 'For',
+  offers: [
+    {
+      title: 'Supply chain and operations',
+      body: 'Agents on top of your ERP, your spreadsheets and your WhatsApp groups. Stock, lead times, supplier risk, reorders.',
+      who: 'Manufacturers, importers, distributors',
+    },
+    {
+      title: 'Security operations',
+      body: 'AI assistants that work with the SIEM you already run: Splunk, QRadar, LogRhythm and others. Threat hunting in plain language, with every query and result logged.',
+      who: 'Security firms, integrators, bank IT',
+    },
+    {
+      title: 'Voice and accessibility',
+      body: 'Voice-first front ends for your own tools, with approval gates on every action. For staff who cannot type, or whose hands are busy.',
+      who: 'Banks, hospitals, NGOs, government',
+    },
+    {
+      title: 'Private AI infrastructure',
+      body: 'Local models, tenant isolation, tamper-evident logs and audit trails. For data that cannot leave the building.',
+      who: 'Anyone regulated',
+    },
+  ],
+  pilot2: 'Engagements start with a two-week scoped pilot on your data.',
+  principles: ['Human in the loop', 'Every action logged', 'Model-agnostic: local, Claude or others', 'You own the code'],
   contactLabels: { email: 'Email', office: 'Office' },
   mailApp: 'or use your mail app',
+  reply: 'Reply within one working day.',
   teamHeading: 'Team',
   team: [
-    { name: 'Kashaf Fatima', role: 'Founder and Lead AI Engineer', linkedin: 'https://www.linkedin.com/in/kashaf-fatima-jaffri67' },
-    { name: 'Muntaha Jabbar', role: 'Co-founder, AI and QA', linkedin: 'https://www.linkedin.com/in/muntaha-j-abbasi-52253426a/' },
-    { name: 'Rizwan Saleem', role: 'Co-founder, Brand and Engineering', linkedin: 'https://www.linkedin.com/in/rizwan-saleem-451b18258/' },
+    { name: 'Kashaf Fatima', role: 'Founder and Lead AI Engineer', bio: 'AI/ML engineer, previously ProForecast (UK). Built Command and Occuralog.', linkedin: 'https://www.linkedin.com/in/kashaf-fatima-jaffri67' },
+    { name: 'Muntaha Jabbar', role: 'Co-founder, AI and QA', bio: 'QA and evaluation. Owns the test suites.', linkedin: 'https://www.linkedin.com/in/muntaha-j-abbasi-52253426a/' },
+    { name: 'Rizwan Saleem', role: 'Co-founder, Brand and Engineering', bio: 'Brand and front end. Built this site’s design system.', linkedin: 'https://www.linkedin.com/in/rizwan-saleem-451b18258/' },
   ],
   teamLink: 'LinkedIn',
 };
@@ -251,6 +328,8 @@ export const proof = {
 export const footer = {
   github: 'GitHub',
   linkedin: 'LinkedIn',
+  substack: 'Substack',
+  location: 'Karachi, Pakistan',
   copyright: '© 2026 Occuris AI',
   newTab: '(opens in a new tab)',
 };

@@ -1,0 +1,125 @@
+---
+// "How it fits together": the three products as one loop, drawn as a static
+// diagram with a single amber dot travelling along the arrows. Two layouts
+// of the same drawing: left to right on wide screens, top to bottom on phones.
+import Headline from './Headline.astro';
+import { system } from '../content/copy';
+import '../styles/screens/system.css';
+
+const { inputs, parts, outputs } = system;
+
+// ---- wide: 1200 x 400 ----
+const W = { boxW: 232, boxH: 120, cy: 200, xs: [222, 496, 770], inX: 86, outX: 1116, pillW: 124, pillH: 32 };
+const inY = inputs.map((_, i) => 110 + i * 60);
+const outY = outputs.map((_, i) => 130 + i * 70);
+const wideDot = `M${W.inX + W.pillW / 2},${inY[1]} C190,${inY[1]} 200,${W.cy} ${W.xs[0]},${W.cy} L${W.xs[2] + W.boxW},${W.cy} C1030,${W.cy} 1024,${outY[0]} ${W.outX - W.pillW / 2},${outY[0]}`;
+
+// ---- tall: 360 x 720 ----
+const T = { boxW: 260, boxH: 96, cx: 180, ys: [178, 336, 494], pillW: 150, pillH: 30 };
+const tallIn = inputs.map((_, i) => [i % 2 ? 268 : 92, 40 + Math.floor(i / 2) * 44] as const);
+const tallOut = outputs.map((_, i) => [62 + i * 118, 672] as const);
+const tallDot = `M${tallIn[0][0]},${tallIn[0][1] + T.pillH / 2} C${tallIn[0][0]},140 ${T.cx},140 ${T.cx},${T.ys[0]} L${T.cx},${T.ys[2] + T.boxH} C${T.cx},630 ${tallOut[0][0]},620 ${tallOut[0][0]},${tallOut[0][1] - T.pillH / 2}`;
+---
+<section class="screen sys" id="system" data-screen="paper" aria-labelledby="sys-title">
+  <div class="wrap">
+    <div class="sys__head">
+      <p class="tag"><span class="tag__ring" aria-hidden="true"></span>{system.eyebrow}</p>
+      <Headline id="sys-title" lines={system.headline} class="sys__title" />
+      <p class="sys__body" data-reveal>{system.body}</p>
+    </div>
+
+    <figure class="sys__figure" role="img" aria-label={system.diagramLabel}>
+      <!-- wide -->
+      <svg class="sys__svg sys__svg--wide" viewBox="0 0 1200 400" aria-hidden="true">
+        <rect class="sys__frame" x={W.xs[0] - 28} y="96" width={W.xs[2] + W.boxW - W.xs[0] + 56} height="208" />
+        <text class="sys__frame-label" x={W.xs[0] - 16} y="100">{system.frame}</text>
+
+        {inY.map((y) => (
+          <path class="sys__link sys__link--in" d={`M${W.inX + W.pillW / 2},${y} C190,${y} 200,${W.cy} ${W.xs[0]},${W.cy}`} />
+        ))}
+        <path class="sys__link" d={`M${W.xs[0] + W.boxW},${W.cy} L${W.xs[1] - 6},${W.cy}`} marker-end="url(#sys-arrow)" />
+        <path class="sys__link" d={`M${W.xs[1] + W.boxW},${W.cy} L${W.xs[2] - 6},${W.cy}`} marker-end="url(#sys-arrow)" />
+        {outY.map((y) => (
+          <path class="sys__link sys__link--out" d={`M${W.xs[2] + W.boxW},${W.cy} C1030,${W.cy} 1024,${y} ${W.outX - W.pillW / 2 - 4},${y}`} />
+        ))}
+
+        <circle class="sys__dot" r="5">
+          <animateMotion dur="7s" repeatCount="indefinite" path={wideDot} />
+        </circle>
+
+        {inputs.map((s, i) => (
+          <g class="sys__pill" transform={`translate(${W.inX} ${inY[i]})`}>
+            <rect x={-W.pillW / 2} y={-W.pillH / 2} width={W.pillW} height={W.pillH} rx={W.pillH / 2} />
+            <text y="1">{s}</text>
+          </g>
+        ))}
+        {parts.map((p, i) => (
+          <g class="sys__box" transform={`translate(${W.xs[i]} ${W.cy - W.boxH / 2})`}>
+            <rect width={W.boxW} height={W.boxH} rx="6" />
+            <text class="sys__name" x={W.boxW / 2} y={i === 1 ? 44 : 52}>{p.name}</text>
+            <text class="sys__line" x={W.boxW / 2} y={i === 1 ? 70 : 78}>{p.line}</text>
+            {i === 1 && [0, 1, 2, 3, 4, 5].map((k) => <circle class="sys__agent" cx={W.boxW / 2 - 40 + k * 16} cy="94" r="3.5" />)}
+          </g>
+        ))}
+        {outputs.map((s, i) => (
+          <g class="sys__pill sys__pill--out" transform={`translate(${W.outX} ${outY[i]})`}>
+            <rect x={-W.pillW / 2} y={-W.pillH / 2} width={W.pillW} height={W.pillH} rx={W.pillH / 2} />
+            <text y="1">{s}</text>
+          </g>
+        ))}
+        <defs>
+          <marker id="sys-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path class="sys__arrowhead" d="M0,0 L10,5 L0,10 z" />
+          </marker>
+        </defs>
+      </svg>
+
+      <!-- tall -->
+      <svg class="sys__svg sys__svg--tall" viewBox="0 0 360 720" aria-hidden="true">
+        <rect class="sys__frame" x={T.cx - T.boxW / 2 - 18} y={T.ys[0] - 22} width={T.boxW + 36} height={T.ys[2] + T.boxH - T.ys[0] + 44} />
+        <text class="sys__frame-label" x={T.cx - T.boxW / 2 - 8} y={T.ys[0] - 18}>{system.frame}</text>
+
+        {tallIn.map(([x, y]) => (
+          <path class="sys__link sys__link--in" d={`M${x},${y + T.pillH / 2} C${x},140 ${T.cx},140 ${T.cx},${T.ys[0]}`} />
+        ))}
+        <path class="sys__link" d={`M${T.cx},${T.ys[0] + T.boxH} L${T.cx},${T.ys[1] - 6}`} marker-end="url(#sys-arrow-t)" />
+        <path class="sys__link" d={`M${T.cx},${T.ys[1] + T.boxH} L${T.cx},${T.ys[2] - 6}`} marker-end="url(#sys-arrow-t)" />
+        {tallOut.map(([x, y]) => (
+          <path class="sys__link sys__link--out" d={`M${T.cx},${T.ys[2] + T.boxH} C${T.cx},630 ${x},620 ${x},${y - T.pillH / 2 - 3}`} />
+        ))}
+
+        <circle class="sys__dot" r="5">
+          <animateMotion dur="7s" repeatCount="indefinite" path={tallDot} />
+        </circle>
+
+        {inputs.map((s, i) => (
+          <g class="sys__pill" transform={`translate(${tallIn[i][0]} ${tallIn[i][1]})`}>
+            <rect x={-T.pillW / 2} y={-T.pillH / 2} width={T.pillW} height={T.pillH} rx={T.pillH / 2} />
+            <text y="1">{s}</text>
+          </g>
+        ))}
+        {parts.map((p, i) => (
+          <g class="sys__box" transform={`translate(${T.cx - T.boxW / 2} ${T.ys[i]})`}>
+            <rect width={T.boxW} height={T.boxH} rx="6" />
+            <text class="sys__name" x={T.boxW / 2} y={i === 1 ? 36 : 42}>{p.name}</text>
+            <text class="sys__line" x={T.boxW / 2} y={i === 1 ? 60 : 66}>{p.line}</text>
+            {i === 1 && [0, 1, 2, 3, 4, 5].map((k) => <circle class="sys__agent" cx={T.boxW / 2 - 40 + k * 16} cy="78" r="3.5" />)}
+          </g>
+        ))}
+        {outputs.map((s, i) => (
+          <g class="sys__pill sys__pill--out" transform={`translate(${tallOut[i][0]} ${tallOut[i][1]})`}>
+            <rect x={-54} y={-T.pillH / 2} width={108} height={T.pillH} rx={T.pillH / 2} />
+            <text y="1">{s}</text>
+          </g>
+        ))}
+        <defs>
+          <marker id="sys-arrow-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path class="sys__arrowhead" d="M0,0 L10,5 L0,10 z" />
+          </marker>
+        </defs>
+      </svg>
+    </figure>
+
+    <p class="sys__note">{system.note}</p>
+  </div>
+</section>

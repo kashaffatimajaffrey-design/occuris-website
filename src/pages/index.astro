@@ -3,6 +3,8 @@ import '../styles/tokens.css';
 import '../styles/base.css';
 import Nav from '../components/Nav.astro';
 import Story from '../components/Story.astro';
+import System from '../components/System.astro';
+import Echo from '../components/Echo.astro';
 import Occuralog from '../components/Occuralog.astro';
 import Command from '../components/Command.astro';
 import Private from '../components/Private.astro';
@@ -51,8 +53,10 @@ const domain = Astro.site?.hostname ?? '';
     <Nav />
     <main id="main">
       <Story />
+      <System />
       <Occuralog />
       <Command />
+      <Echo />
       <Private />
       <Contact />
     </main>
