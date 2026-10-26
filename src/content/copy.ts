@@ -320,7 +320,7 @@ export const proof = {
   team: [
     { name: 'Kashaf Fatima', role: 'Founder and Lead AI Engineer', bio: 'AI/ML engineer, previously ProForecast (UK). Built Command and Occuralog.', linkedin: 'https://www.linkedin.com/in/kashaf-fatima-jaffri67' },
     { name: 'Muntaha Jabbar', role: 'Co-founder, AI and QA', bio: 'QA and evaluation. Owns the test suites.', linkedin: 'https://www.linkedin.com/in/muntaha-j-abbasi-52253426a/' },
-    { name: 'Rizwan Saleem', role: 'Co-founder, Brand and Engineering', bio: 'Brand and front end. Built this site’s design system.', linkedin: 'https://www.linkedin.com/in/rizwan-saleem-451b18258/' },
+    { name: 'Rizwan Saleem', role: 'Co-founder, Testing and Engineering', bio: 'Testing and engineering on Occuris Command.', linkedin: 'https://www.linkedin.com/in/rizwan-saleem-451b18258/' },
   ],
   teamLink: 'LinkedIn',
 };
