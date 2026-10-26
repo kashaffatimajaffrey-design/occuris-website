@@ -7,23 +7,26 @@
 /* The three numbers are the headline; each carries a citation */
 .proof__title {
   font-size: var(--t-stat);
-  line-height: 1;
+  line-height: 1.05;
   letter-spacing: -0.025em;
   max-width: none;
   text-wrap: wrap;
 }
 .proof__part {
   display: inline-block;
-  margin-right: 0.28em;
+  margin-right: 0.42em;
   white-space: nowrap;
 }
+/* A real superscript with air on both sides, so "months.1 300+" never reads as one word */
 .fn {
-  display: inline-block;
-  margin-left: 0.08em;
-  transform: translateY(-1.55em);
+  margin-left: 0.12em;
   font-family: var(--font-mono);
-  font-size: var(--t-label);
+  font-size: 0.24em;
   letter-spacing: 0;
+  vertical-align: 2.4em;
+  line-height: 0;
+}
+.fn a {
   color: var(--violet);
 }
 
@@ -61,15 +64,16 @@
   color: var(--violet);
 }
 
-/* Letterhead */
+/* ---------- Work with us ---------- */
 .letter {
   margin-top: var(--s12);
   padding-top: var(--s4);
   border-top: 1px solid var(--ink);
   row-gap: var(--s6);
+  align-items: start;
 }
 .letter__pitch {
-  grid-column: 1 / span 5;
+  grid-column: 1 / span 8;
 }
 .letter__heading {
   font-family: var(--font-serif);
@@ -79,23 +83,98 @@
   letter-spacing: -0.015em;
   margin: 0 0 var(--s3);
 }
-.letter__pitch p {
-  max-width: 28em;
+.letter__intro {
+  max-width: 36em;
   color: var(--ink-70);
   text-wrap: pretty;
 }
-.letter__pitch p + p {
+.offers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s2);
+  margin: var(--s4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.offer {
+  display: flex;
+  flex-direction: column;
+  padding: var(--s3);
+  border: var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper);
+  transition: border-color 200ms;
+}
+.offer:hover {
+  border-color: var(--ink-60);
+}
+.offer__title {
+  margin: 0;
+  font-size: var(--t-body);
+  font-weight: 500;
+  line-height: 1.3;
+}
+.offer__body {
+  flex: 1;
+  margin-top: var(--s1);
+  font-size: var(--t-ui);
+  line-height: 1.5;
+  color: var(--ink-70);
+  text-wrap: pretty;
+}
+.offer__who {
   margin-top: var(--s2);
+  padding-top: var(--s1);
+  border-top: 1px solid var(--ink-12);
+  font-family: var(--font-mono);
+  font-size: var(--t-micro);
+  line-height: 1.5;
+  color: var(--ink);
+}
+.offer__who span {
+  color: var(--violet);
+  margin-right: 4px;
+}
+.letter__pilot {
+  margin-top: var(--s3);
+  font-size: var(--t-ui);
+  color: var(--ink);
+}
+.principles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1) var(--s3);
+  margin: var(--s2) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-small);
+  color: var(--ink-70);
+}
+.principles li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.principles li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--violet);
+}
+
+/* ---------- contact column ---------- */
+.letter__contact {
+  grid-column: 9 / span 4;
+  padding-top: calc(var(--t-h3) + var(--s3));
 }
 .letter__lines {
-  grid-column: 7 / span 6;
   margin: 0;
 }
 .letter__line {
   display: grid;
-  grid-template-columns: 96px 1fr;
-  align-items: baseline;
-  gap: var(--s2);
+  grid-template-columns: 1fr;
+  gap: 6px;
   padding: 14px 0 18px;
   border-bottom: 1px solid var(--ink-12);
 }
@@ -115,7 +194,7 @@
   position: relative;
   display: inline-block;
   font-family: var(--font-serif);
-  font-size: var(--t-h3);
+  font-size: 34px;
   line-height: 1.1;
   letter-spacing: -0.015em;
   color: var(--violet);
@@ -151,8 +230,13 @@
 .line__plain {
   font-size: var(--t-body);
 }
+.letter__reply {
+  margin-top: var(--s2);
+  font-size: var(--t-small);
+  color: var(--ink-60);
+}
 
-/* Masthead */
+/* ---------- Masthead ---------- */
 .masthead {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -179,12 +263,20 @@
   font-size: var(--t-ui);
   color: var(--ink-60);
 }
+.person__bio {
+  margin-top: var(--s1);
+  font-size: var(--t-ui);
+  line-height: 1.5;
+  color: var(--ink-70);
+  text-wrap: pretty;
+}
 .person__link {
   display: inline-block;
   margin-top: var(--s1);
   font-size: var(--t-ui);
 }
 
+/* ---------- Footer ---------- */
 .foot {
   margin-top: var(--s12);
   border-top: 1px solid var(--ink-12);
@@ -200,36 +292,48 @@
   width: 24px;
   height: 24px;
 }
+.foot__place,
 .foot__copy {
-  margin-left: auto;
   color: var(--ink-60);
+}
+.foot__place {
+  margin-left: auto;
 }
 
 @media (max-width: 959px) {
   .contact {
     padding-top: calc(var(--nav-h) + var(--s6));
   }
+  .proof__title {
+    font-size: 44px;
+  }
   .proof__part {
     display: block;
-  }
-  .fn {
-    transform: translateY(-1.1em);
   }
   .proof__pilot,
   .notes,
   .letter__pitch,
-  .letter__lines {
+  .letter__contact {
     grid-column: 1 / -1;
+  }
+  .proof__pilot {
+    font-size: var(--t-body);
   }
   .letter {
     margin-top: var(--s8);
   }
-  .letter__line {
+  .letter__contact {
+    padding-top: 0;
+  }
+  .offers {
     grid-template-columns: 1fr;
-    gap: 4px;
+  }
+  .principles {
+    flex-direction: column;
+    gap: var(--s1);
   }
   .big {
-    font-size: 28px;
+    font-size: 26px;
   }
   .masthead {
     grid-template-columns: 1fr;
@@ -248,7 +352,7 @@
     gap: var(--s2) var(--s3);
     padding-block: var(--s3);
   }
-  .foot__copy {
+  .foot__place {
     margin-left: 0;
     width: 100%;
   }

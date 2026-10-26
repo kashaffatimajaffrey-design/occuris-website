@@ -11,7 +11,7 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(contact.ema
     <h2 class="proof__title" id="contact-title">
       {proof.headline.map((part, i) => (
         <span class="proof__part">
-          {part}<a class="fn" href={`#note-${i + 1}`} aria-label={`Note ${i + 1}`}>{i + 1}</a>
+          {part}<sup class="fn"><a href={`#note-${i + 1}`} aria-label={`Note ${i + 1}`}>{i + 1}</a></sup>
         </span>
       ))}
     </h2>
@@ -28,22 +28,37 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(contact.ema
     <div class="grid letter">
       <div class="letter__pitch">
         <h3 class="letter__heading">{proof.workHeading}</h3>
-        <p>{proof.custom}</p>
-        <p>{proof.echo}</p>
+        <p class="letter__intro">{proof.workIntro}</p>
+        <ul class="offers" role="list">
+          {proof.offers.map((o) => (
+            <li class="offer">
+              <h4 class="offer__title">{o.title}</h4>
+              <p class="offer__body">{o.body}</p>
+              <p class="offer__who"><span>{proof.forLabel}</span> {o.who}</p>
+            </li>
+          ))}
+        </ul>
+        <p class="letter__pilot">{proof.pilot2}</p>
+        <ul class="principles" role="list">
+          {proof.principles.map((p) => <li>{p}</li>)}
+        </ul>
       </div>
-      <dl class="letter__lines">
-        <div class="letter__line">
-          <dt>{proof.contactLabels.email}</dt>
-          <dd>
-            <a class="big plausible-event-name=Email+Click" href={gmail} target="_blank" rel="noopener">{contact.email}<span class="sr-only"> {footer.newTab}</span></a>
-            <a class="line__alt plausible-event-name=Email+Click" href={mailto}>{proof.mailApp}</a>
-          </dd>
-        </div>
-        <div class="letter__line">
-          <dt>{proof.contactLabels.office}</dt>
-          <dd class="line__plain">{contact.office}</dd>
-        </div>
-      </dl>
+      <div class="letter__contact">
+        <dl class="letter__lines">
+          <div class="letter__line">
+            <dt>{proof.contactLabels.email}</dt>
+            <dd>
+              <a class="big plausible-event-name=Email+Click" href={gmail} target="_blank" rel="noopener">{contact.email}<span class="sr-only"> {footer.newTab}</span></a>
+              <a class="line__alt plausible-event-name=Email+Click" href={mailto}>{proof.mailApp}</a>
+            </dd>
+          </div>
+          <div class="letter__line">
+            <dt>{proof.contactLabels.office}</dt>
+            <dd class="line__plain">{contact.office}</dd>
+          </div>
+        </dl>
+        <p class="letter__reply">{proof.reply}</p>
+      </div>
     </div>
 
     <h3 class="sr-only">{proof.teamHeading}</h3>
@@ -52,6 +67,7 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(contact.ema
         <li class="person">
           <p class="person__name">{p.name}</p>
           <p class="person__role">{p.role}</p>
+          <p class="person__bio">{p.bio}</p>
           {p.linkedin && (
             <a class="person__link" href={p.linkedin} target="_blank" rel="noopener">
               {proof.teamLink}<span class="sr-only"> {p.name} {footer.newTab}</span>
@@ -69,6 +85,8 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(contact.ema
       </a>
       {links.github && <a href={links.github} target="_blank" rel="noopener" class="plausible-event-name=GitHub+Click">{footer.github}<span class="sr-only"> {footer.newTab}</span></a>}
       {links.linkedin && <a href={links.linkedin} target="_blank" rel="noopener">{footer.linkedin}<span class="sr-only"> {footer.newTab}</span></a>}
+      {links.substack && <a href={links.substack} target="_blank" rel="noopener">{footer.substack}<span class="sr-only"> {footer.newTab}</span></a>}
+      <p class="foot__place">{footer.location}</p>
       <p class="foot__copy">{footer.copyright}</p>
     </div>
   </footer>
