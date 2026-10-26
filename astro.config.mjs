@@ -8,6 +8,8 @@ export default defineConfig({
   site: process.env.SITE_URL || 'https://occuris.pages.dev',
   output: 'static',
   devToolbar: { enabled: false },
-  build: { inlineStylesheets: 'always' },
+  // Pages are built as command.html etc., so /command is served directly
+  // instead of redirecting to /command/ (keeps canonical URLs and links exact)
+  build: { inlineStylesheets: 'always', format: 'file' },
   vite: { build: { assetsInlineLimit: 0 } },
 });
