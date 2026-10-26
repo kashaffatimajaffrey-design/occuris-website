@@ -11,10 +11,10 @@ export const contact = {
 };
 
 export const links = {
-  // Empty links are hidden. github.com/occuris-ai does not exist yet, and the
-  // company LinkedIn URL was never confirmed; paste the real ones here.
+  // Empty links are hidden. github.com/occuris-ai does not exist yet; paste the
+  // organisation URL here when it does.
   github: '',
-  linkedin: '',
+  linkedin: 'https://www.linkedin.com/company/occurisai/',
 };
 
 export const tagline =
