@@ -19,7 +19,7 @@ import '../styles/screens/story.css';
       <img class="fallback" src="/fallbacks/map.png" alt={fallbackAlt.map} loading="lazy" decoding="async" />
       <a class="story__skip" href="#system" data-scroll>{story.skip}<span aria-hidden="true"> ↓</span></a>
       <div class="hud" aria-hidden="true">
-        <span class="hud__clock" data-clock>{story.beats[0].time}</span>
+        <span class="hud__clock" data-clock data-start={story.start}>{story.start}</span>
         <span class="hud__n"><b data-count="messages">0</b> {story.hud.messages}</span>
         <span class="hud__n"><b data-count="records">0</b> {story.hud.records}</span>
         <span class="hud__n hud__n--amber"><b data-count="decisions">0</b> {story.hud.decisions}</span>
@@ -44,7 +44,7 @@ import '../styles/screens/story.css';
     </div>
 
     {story.beats.map((b, i) => (
-      <article class:list={['beat', { 'beat--open': !('msg' in b) || i === story.beats.length - 1 }]} data-beat={i + 1} data-msg={'msg' in b ? b.msg : undefined}>
+      <article class:list={['beat', { 'beat--open': !('msg' in b) || i === story.beats.length - 1 }]} data-beat={i + 1} data-msg={'msg' in b ? b.msg : undefined} data-final={i === story.beats.length - 1 ? JSON.stringify(story.totals) : undefined}>
         <div class="beat__card">
           <p class="beat__when">
             <span class="beat__time">{b.time}</span>
@@ -56,7 +56,7 @@ import '../styles/screens/story.css';
             <p class="beat__without"><span class="beat__tag">{story.without}</span>{b.without}</p>
           )}
           {'decision' in b && (
-            <p class:list={['beat__decision', { 'beat__decision--ok': i === 1 }]}>
+            <p class:list={['beat__decision', { 'beat__decision--ok': i === 0 }]}>
               <span class="beat__tag beat__tag--with">{story.with}</span>
               <span class="beat__type" data-decision={b.decision}>{b.decision}</span>
             </p>

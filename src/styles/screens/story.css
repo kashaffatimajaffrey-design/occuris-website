@@ -29,6 +29,17 @@
   inset: 0;
   touch-action: pan-y;
 }
+.js .story__map canvas {
+  opacity: 0;
+  transform: translateY(22px) scale(0.985);
+  transition:
+    opacity 900ms var(--ease-out),
+    transform 1300ms var(--ease-out);
+}
+.js .story__map.is-ready canvas {
+  opacity: 1;
+  transform: none;
+}
 .story__overlay {
   position: absolute;
   inset: 0;

@@ -1,25 +1,30 @@
 ---
 // Occuris Echo: one spoken sentence, what Echo did about it, and the approval
 // it waits for. The card plays once when it scrolls into view (main.ts).
-import Headline from './Headline.astro';
-import { echo, links, footer } from '../content/copy';
+import ProductIntro from './ProductIntro.astro';
+import { echo } from '../content/copy';
 import '../styles/screens/echo.css';
+
+interface Props {
+  /** On the product's own page there is no "More" link */
+  detail?: boolean;
+}
+const { detail = false } = Astro.props;
 ---
 <section class="screen echo" id="echo" data-screen="paper" aria-labelledby="echo-title">
   <div class="wrap grid echo__grid">
     <div class="echo__text">
-      <p class="tag"><span class="tag__ring" aria-hidden="true"></span>{echo.eyebrow}</p>
-      <Headline id="echo-title" lines={echo.headline} class="echo__title" />
-      <p class="echo__body" data-reveal>{echo.body}</p>
-      <ul class="echo__points" role="list">
-        {echo.points.map((p) => <li data-reveal>{p}</li>)}
-      </ul>
-      <a class="echo__demo" href={links.echoDemo} target="_blank" rel="noopener">
-        <span class="echo__play" aria-hidden="true"></span>{echo.demo}<span class="sr-only"> {footer.newTab}</span>
-      </a>
+      <ProductIntro
+        tag={echo.eyebrow}
+        headline={echo.headline}
+        titleId="echo-title"
+        body={echo.body}
+        points={echo.points}
+        more={detail ? undefined : { href: '/echo', label: echo.more }}
+      />
     </div>
 
-    <figure class="echo__card" data-echo role="img" aria-label={echo.cardLabel}>
+    <figure class="echo__card" data-echo data-enter role="img" aria-label={echo.cardLabel}>
       <div class="echo__bar" aria-hidden="true">
         <span class="echo__mic"></span>
         <span class="echo__wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>

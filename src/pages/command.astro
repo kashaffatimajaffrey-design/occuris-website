@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import Command from '../components/Command.astro';
+import ProductPage from '../components/ProductPage.astro';
+import { products } from '../content/copy';
+const d = products.command;
+---
+<Base title={d.title} description={d.description} path="/command">
+  <Command detail />
+  <ProductPage product="command" />
+</Base>

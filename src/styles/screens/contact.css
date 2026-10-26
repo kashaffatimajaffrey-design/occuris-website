@@ -64,35 +64,37 @@
   color: var(--violet);
 }
 
-/* ---------- Work with us ---------- */
-.letter {
+/* ---------- Work with us: three services, four principles, contact ---------- */
+.work {
   margin-top: var(--s12);
   padding-top: var(--s4);
   border-top: 1px solid var(--ink);
-  row-gap: var(--s6);
-  align-items: start;
 }
-.letter__pitch {
-  grid-column: 1 / span 8;
+.work__head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-items: end;
 }
 .letter__heading {
+  grid-column: 1 / span 5;
   font-family: var(--font-serif);
   font-weight: 400;
   font-size: var(--t-h3);
   line-height: 1;
   letter-spacing: -0.015em;
-  margin: 0 0 var(--s3);
+  margin: 0;
 }
 .letter__intro {
-  max-width: 36em;
+  grid-column: 7 / span 6;
   color: var(--ink-70);
   text-wrap: pretty;
 }
 .offers {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s2);
-  margin: var(--s4) 0 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gutter);
+  margin: var(--s5) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -103,7 +105,6 @@
   border: var(--rule);
   border-radius: var(--radius);
   background: var(--paper);
-  transition: border-color 200ms;
 }
 .offer:hover {
   border-color: var(--ink-60);
@@ -136,14 +137,14 @@
   margin-right: 4px;
 }
 .letter__pilot {
-  margin-top: var(--s3);
+  margin-top: var(--s4);
   font-size: var(--t-ui);
   color: var(--ink);
 }
 .principles {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s1) var(--s3);
+  gap: var(--s1) var(--s4);
   margin: var(--s2) 0 0;
   padding: 0;
   list-style: none;
@@ -163,38 +164,32 @@
   background: var(--violet);
 }
 
-/* ---------- contact column ---------- */
-.letter__contact {
-  grid-column: 9 / span 4;
-  padding-top: calc(var(--t-h3) + var(--s3));
-}
-.letter__lines {
-  margin: 0;
-}
-.letter__line {
+/* ---------- contact ---------- */
+.reach {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 6px;
-  padding: 14px 0 18px;
-  border-bottom: 1px solid var(--ink-12);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  margin-top: var(--s8);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--ink-12);
 }
-.letter__line:first-child {
-  padding-top: 0;
+.reach__line:first-child {
+  grid-column: 1 / span 7;
 }
-.letter__line dt {
+.reach__line:last-child {
+  grid-column: 9 / span 4;
+}
+.reach__key {
+  margin-bottom: 6px;
   font-family: var(--font-mono);
   font-size: var(--t-micro);
   color: var(--ink-60);
-}
-.letter__line dd {
-  margin: 0;
-  min-width: 0;
 }
 .big {
   position: relative;
   display: inline-block;
   font-family: var(--font-serif);
-  font-size: 34px;
+  font-size: var(--t-h3);
   line-height: 1.1;
   letter-spacing: -0.015em;
   color: var(--violet);
@@ -231,7 +226,7 @@
   font-size: var(--t-body);
 }
 .letter__reply {
-  margin-top: var(--s2);
+  margin-top: var(--s1);
   font-size: var(--t-small);
   color: var(--ink-60);
 }
@@ -276,30 +271,6 @@
   font-size: var(--t-ui);
 }
 
-/* ---------- Footer ---------- */
-.foot {
-  margin-top: var(--s12);
-  border-top: 1px solid var(--ink-12);
-}
-.foot__inner {
-  display: flex;
-  align-items: center;
-  gap: var(--s4);
-  min-height: 72px;
-  font-size: var(--t-small);
-}
-.foot__brand img {
-  width: 24px;
-  height: 24px;
-}
-.foot__place,
-.foot__copy {
-  color: var(--ink-60);
-}
-.foot__place {
-  margin-left: auto;
-}
-
 @media (max-width: 959px) {
   .contact {
     padding-top: calc(var(--nav-h) + var(--s6));
@@ -312,18 +283,23 @@
   }
   .proof__pilot,
   .notes,
-  .letter__pitch,
-  .letter__contact {
+  .letter__heading,
+  .letter__intro,
+  .reach__line:first-child,
+  .reach__line:last-child {
     grid-column: 1 / -1;
+  }
+  .letter__intro {
+    margin-top: var(--s2);
+  }
+  .reach {
+    row-gap: var(--s4);
   }
   .proof__pilot {
     font-size: var(--t-body);
   }
-  .letter {
+  .work {
     margin-top: var(--s8);
-  }
-  .letter__contact {
-    padding-top: 0;
   }
   .offers {
     grid-template-columns: 1fr;
@@ -346,14 +322,5 @@
   .person + .person {
     border-left: 0;
     border-top: 1px solid var(--ink-12);
-  }
-  .foot__inner {
-    flex-wrap: wrap;
-    gap: var(--s2) var(--s3);
-    padding-block: var(--s3);
-  }
-  .foot__place {
-    margin-left: 0;
-    width: 100%;
   }
 }

@@ -129,8 +129,7 @@ video {
 
 .screen {
   position: relative;
-  min-height: 100vh;
-  padding-block: calc(var(--nav-h) + var(--s8)) var(--s8);
+  padding-block: calc(var(--nav-h) + var(--s6)) var(--s8);
 }
 .screen--night {
   background: var(--night);
@@ -229,6 +228,87 @@ video {
   transform: none;
 }
 
+/* Pictures ease in as you reach them: a slower, longer rise than text */
+.js [data-enter] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 800ms var(--ease-out),
+    transform 1100ms var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+.js [data-enter].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- product sections: one shape for all three ---------- */
+.prod__title {
+  font-size: var(--t-h1);
+  line-height: 1.02;
+}
+.prod__body {
+  margin-top: var(--s3);
+  max-width: 32em;
+  color: var(--ink-70);
+  text-wrap: pretty;
+}
+.prod__points {
+  display: grid;
+  gap: var(--s1);
+  margin: var(--s3) 0 0;
+  padding: var(--s2) 0 0;
+  border-top: 1px solid var(--ink-12);
+  list-style: none;
+}
+.prod__points li {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  align-items: baseline;
+  font-size: var(--t-ui);
+  line-height: 1.5;
+  color: var(--ink);
+}
+.prod__points li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--violet);
+  transform: translateY(-2px);
+}
+.prod__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: var(--s4);
+  font-weight: 500;
+}
+.prod__more:hover {
+  text-decoration: none;
+}
+.prod__arrow {
+  transition: transform 220ms var(--ease-out);
+}
+.prod__more:hover .prod__arrow {
+  transform: translateX(4px);
+}
+.prod--night .prod__title {
+  color: var(--paper);
+}
+.prod--night .prod__body {
+  color: var(--mist);
+}
+.prod--night .prod__points {
+  border-top-color: var(--mist-30);
+}
+.prod--night .prod__points li {
+  color: var(--paper);
+}
+.prod--night .prod__more {
+  color: var(--mist);
+}
+
 /* Canvas frames shared by the three set pieces */
 .stage {
   position: relative;
@@ -256,6 +336,7 @@ video {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .js [data-enter],
   .js [data-reveal] {
     opacity: 1;
     transform: none;

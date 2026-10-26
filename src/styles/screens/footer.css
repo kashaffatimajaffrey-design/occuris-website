@@ -1,0 +1,36 @@
+/* Shared footer, on every page */
+.foot {
+  margin-top: var(--s12);
+  border-top: 1px solid var(--ink-12);
+}
+.foot__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  min-height: 72px;
+  font-size: var(--t-small);
+}
+.foot__brand img {
+  width: 24px;
+  height: 24px;
+}
+.foot__place,
+.foot__copy {
+  color: var(--ink-60);
+}
+.foot__place {
+  margin-left: auto;
+}
+
+
+@media (max-width: 959px) {
+  .foot__inner {
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s3);
+    padding-block: var(--s3);
+  }
+  .foot__place {
+    margin-left: 0;
+    width: 100%;
+  }
+}

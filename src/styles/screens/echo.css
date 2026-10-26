@@ -9,61 +9,6 @@
 .echo__text {
   grid-column: 1 / span 6;
 }
-.echo__title {
-  font-size: var(--t-h1);
-  line-height: 1.02;
-}
-.echo__body {
-  margin-top: var(--s3);
-  max-width: 32em;
-  color: var(--ink-70);
-  text-wrap: pretty;
-}
-.echo__points {
-  display: grid;
-  gap: var(--s1);
-  margin: var(--s4) 0 0;
-  padding: 0;
-  list-style: none;
-}
-.echo__points li {
-  display: grid;
-  grid-template-columns: 18px 1fr;
-  align-items: baseline;
-  font-size: var(--t-ui);
-  line-height: 1.5;
-}
-.echo__points li::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--violet);
-  transform: translateY(-2px);
-}
-.echo__demo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: var(--s4);
-  font-weight: 500;
-}
-.echo__play {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1.5px solid currentColor;
-}
-.echo__play::before {
-  content: '';
-  margin-left: 2px;
-  border-left: 8px solid currentColor;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-}
-
 /* ---------- the transcript card ---------- */
 .echo__card {
   grid-column: 8 / span 5;

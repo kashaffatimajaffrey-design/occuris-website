@@ -46,14 +46,14 @@ const browser = await chromium.launch({ channel: process.env.PW_CHANNEL || 'msed
 
   // Story: the port beat moves the camera, says the message, types the decision
   await page.evaluate(() => {
-    const b = document.querySelector('[data-beat="3"]');
+    const b = document.querySelector('[data-beat="2"]');
     const r = b.getBoundingClientRect();
     window.scrollTo(0, r.top + scrollY + r.height / 2 - innerHeight / 2);
   });
   await page.waitForTimeout(4500);
   const beat = await page.evaluate(() => ({
-    active: document.querySelector('[data-beat="3"]').classList.contains('is-active'),
-    decision: document.querySelector('[data-beat="3"] [data-decision]').textContent,
+    active: document.querySelector('[data-beat="2"]').classList.contains('is-active'),
+    decision: document.querySelector('[data-beat="2"] [data-decision]').textContent,
     clock: document.querySelector('[data-clock]').textContent,
     counts: [...document.querySelectorAll('[data-count]')].map((e) => e.textContent).join('/'),
   }));
@@ -102,11 +102,15 @@ const browser = await chromium.launch({ channel: process.env.PW_CHANNEL || 'msed
   // Change list (Oct 26): new screens, nav, words buyers scan for, no doubled text
   const cl = await page.evaluate(() => {
     const text = document.body.innerText;
-    const words = ['SIEM', 'Splunk', 'QRadar', 'threat hunting', 'accessibility', 'audit trails', 'tenant isolation', 'Model-agnostic', 'Human in the loop', 'You own the code', 'two-week scoped pilot', '57 of 57', 'Reply within one working day'];
+    const words = ['SIEM', 'Splunk', 'QRadar', 'threat hunting', 'accessibility', 'Model-agnostic', 'Human in the loop', 'You own the code', 'two-week scoped pilot', '57 of 57', 'Reply within one working day'];
     return {
       nav: [...document.querySelectorAll('.nav__links a')].map((a) => a.textContent.trim()).join(','),
       sections: ['system', 'echo'].every((id) => !!document.getElementById(id)),
-      demo: document.querySelector('.echo__demo')?.getAttribute('href') ?? '',
+      loom: document.querySelectorAll('a[href*="loom.com"]').length,
+      more: [...document.querySelectorAll('.prod__more')].map((a) => a.getAttribute('href')).join(','),
+      beats: document.querySelectorAll('[data-beat]').length,
+      offers: document.querySelectorAll('.offer').length,
+      principles: document.querySelectorAll('.principles li').length,
       missing: words.filter((w) => !text.toLowerCase().includes(w.toLowerCase())),
       doubled: (text.match(/Compliance: 2 damaged pallets logged with photos/g) ?? []).length,
       title: document.title,
@@ -114,11 +118,19 @@ const browser = await chromium.launch({ channel: process.env.PW_CHANNEL || 'msed
     };
   });
   check('changes: nav is System, Occuralog, Command, Echo, Private, Contact', cl.nav === 'System,Occuralog,Command,Echo,Private,Contact', cl.nav);
-  check('changes: System and Echo screens exist; demo links to Loom', cl.sections && cl.demo.startsWith('https://www.loom.com/'));
+  check('changes: System and Echo screens exist; no Loom demo link', cl.sections && cl.loom === 0);
+  check('products: each section links to its own page', cl.more === '/occuralog,/command,/echo', cl.more);
+  check('story: hero plus four beats', cl.beats === 5, String(cl.beats));
+  check('close: three services and four principles', cl.offers === 3 && cl.principles === 4, `${cl.offers} / ${cl.principles}`);
   check('changes: every word buyers scan for is on the page', cl.missing.length === 0, cl.missing.join(', '));
   check('changes: story decision is not printed twice (F2)', cl.doubled <= 2, `${cl.doubled} copies incl. Command log`);
   check('changes: title names operations, supply chain and security (F12)', /supply chain and security/.test(cl.title), cl.title);
   check('changes: footer has Substack and Karachi, Pakistan (F10)', /Substack/.test(cl.footer) && /Karachi, Pakistan/.test(cl.footer));
+  for (const p of ['occuralog', 'command', 'echo']) {
+    const r = await page.goto(new URL('/' + p, base).href, { waitUntil: 'networkidle' });
+    const ok = await page.evaluate(() => document.querySelectorAll('.pp__block').length === 3 && !document.querySelector('.prod__more'));
+    check(`page /${p}: loads with what / how / where it stands`, r.status() === 200 && ok);
+  }
   check('no page errors on desktop', errors.length === 0, errors.join(' | '));
   await page.close();
 }

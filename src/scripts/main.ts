@@ -133,6 +133,8 @@ if (!reduce) lenis = new Lenis({ autoRaf: true, lerp: 0.11 });
 
 for (const a of $$<HTMLAnchorElement>('a[data-scroll]')) {
   a.addEventListener('click', (e) => {
+    // Only links into this page scroll in place; links to another page navigate
+    if (a.pathname !== location.pathname) return;
     const target = a.hash ? $(a.hash) : null;
     if (!target) return;
     e.preventDefault();
@@ -182,7 +184,7 @@ const reveal = new IntersectionObserver(
   },
   { rootMargin: '0px 0px -8% 0px' },
 );
-$$('[data-reveal]').forEach((el) => reveal.observe(el));
+$$('[data-reveal], [data-enter]').forEach((el) => reveal.observe(el));
 
 if (!reduce) weightOnPointer();
 
@@ -219,20 +221,16 @@ if (mapStage && !reduce) {
 
   // Camera for each beat, in map tiles. Phones zoom in a little further.
   const z = phone ? 1.5 : 1;
+  // hero, the late truck, the port, the stock sheet, the whole day
   const SHOTS: Shot[] = [
     { x: 23, y: 11, zoom: 1 * (phone ? 1.6 : 1) },
-    { x: 23, y: 11, zoom: 1.05 * (phone ? 1.6 : 1) },
     { x: 0, y: 0, zoom: 2.4 * z, follow: 'truck-3-0' },
     { x: 15.6, y: 16.2, zoom: 2.6 * z },
-    { x: 41.5, y: 3, zoom: 2.4 * z },
-    { x: 21.9, y: 19, zoom: 2.8 * z },
-    { x: 23.6, y: 16.8, zoom: 2.3 * z },
-    { x: 0, y: 0, zoom: 1.6 * z, follow: 'plane' },
     { x: 21.9, y: 19, zoom: 2.8 * z },
     { x: 23, y: 11, zoom: 1 * (phone ? 1.6 : 1) },
   ];
   // On phones the beat card covers the top of the map, so aim lower
-  if (phone) SHOTS.forEach((s, i) => i > 1 && (s.ay = 0.66));
+  if (phone) SHOTS.forEach((s, i) => i > 0 && (s.ay = 0.66));
 
   // Each decision is in the page once; it starts hidden and types in when its message is parsed
   const typers = new Map<HTMLElement, ReturnType<typeof typeIn>>();
@@ -250,8 +248,9 @@ if (mapStage && !reduce) {
     map.clear();
     map.setStock(27);
     map.shoot(SHOTS[i] ?? SHOTS[0]);
-    map.setAmbient(i <= 1 || i === beats.length - 1);
-    if (clockEl) clockEl.textContent = beat.querySelector('.beat__time')?.textContent ?? clockEl.textContent;
+    const final = beat.dataset.final;
+    map.setAmbient(i === 0 || !!final);
+    if (clockEl) clockEl.textContent = beat.querySelector('.beat__time')?.textContent ?? clockEl.dataset.start ?? '';
 
     // Counters show where in the day we are
     const msgBeats = beats.slice(0, i + 1).filter((b) => b.dataset.msg !== undefined);
@@ -259,13 +258,18 @@ if (mapStage && !reduce) {
     bump(counts.records, Math.max(0, msgBeats.length - (beat.dataset.msg !== undefined ? 1 : 0)));
     bump(counts.decisions, beats.slice(0, i).filter((b) => b.querySelector('[data-decision]') && !b.querySelector('.beat__decision--ok')).length);
 
+    // The last beat shows the whole day's totals, not just the three we watched
+    if (final) {
+      const t = JSON.parse(final);
+      bump(counts.messages, t.messages);
+      bump(counts.records, t.records);
+      bump(counts.decisions, t.decisions);
+      return;
+    }
     const msg = beat.dataset.msg;
     if (msg === undefined) return;
-    const index = Number(msg);
-    if (i === 6) map.block(3, { reroute: true, hold: true });
-    if (i === 7) map.launchPlane();
-    if (i === 5) map.setStock(3);
-    map.say(index, { keep: true });
+    if (i === 3) map.setStock(3);
+    map.say(Number(msg), { keep: true });
   }
 
   lifecycle(mapStage, () => {
@@ -275,6 +279,7 @@ if (mapStage && !reduce) {
       labels: places,
       ambient: true,
       interactive: true,
+      hint: 4,
       onParsed(index) {
         const beat = beats[current];
         if (!beat || Number(beat.dataset.msg) !== index) return;
@@ -299,6 +304,8 @@ if (mapStage && !reduce) {
       },
     });
     window.__map = map;
+    // The diorama settles in once it has drawn its first frame
+    requestAnimationFrame(() => mapStage.classList.add('is-ready'));
     enter(0);
     return map;
   });
@@ -380,6 +387,9 @@ if (flowStage && !reduce) {
     flow = initFlow(canvas, {
       count: phone ? 800 : 2000,
       speed: phone ? 1.1 : 1.4,
+      // Start half in their rows, so a still frame already reads as a table forming
+      base: 0.72,
+      formMs: 900,
       targets,
       onFormed() {
         flowStage.classList.add('is-table');
@@ -396,10 +406,10 @@ if (flowStage && !reduce) {
     (entries) => {
       if (!entries.some((e) => e.isIntersecting)) return;
       const go = () => (flow ? flow.form() : setTimeout(go, 100));
-      setTimeout(go, 400);
+      go();
       trigger.disconnect();
     },
-    { threshold: 0.4 },
+    { threshold: 0.25 },
   );
   trigger.observe(flowStage);
 

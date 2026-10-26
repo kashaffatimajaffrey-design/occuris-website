@@ -9,15 +9,6 @@
 .occ__text {
   grid-column: 1 / span 5;
 }
-.occ__title {
-  font-size: var(--t-h1);
-  line-height: 1;
-}
-.occ__body {
-  margin-top: var(--s3);
-  max-width: 26em;
-  color: var(--ink-70);
-}
 .occ__toggle {
   display: inline-flex;
   align-items: center;

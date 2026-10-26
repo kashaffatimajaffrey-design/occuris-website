@@ -1,24 +1,32 @@
 ---
-import Headline from './Headline.astro';
+import ProductIntro from './ProductIntro.astro';
 import { command } from '../content/copy';
 import '../styles/screens/command.css';
+
+interface Props {
+  /** On the product's own page there is no "More" link */
+  detail?: boolean;
+}
+const { detail = false } = Astro.props;
 ---
 <section class="screen screen--night cmd" id="command" data-screen="night" aria-labelledby="cmd-title">
   <div class="wrap cmd__inner">
     <div class="cmd__head">
-      <p class="tag"><span class="tag__ring" aria-hidden="true"></span>{command.eyebrow}</p>
-      <Headline id="cmd-title" lines={command.headline} class="cmd__title" />
-      <div class="cmd__side">
-        <p class="cmd__body" data-reveal>{command.body}</p>
-        <ul class="cmd__outcomes" role="list">
-          {command.outcomes.map((o) => <li data-reveal>{o}</li>)}
-        </ul>
-      </div>
+      <ProductIntro
+        tag={command.eyebrow}
+        headline={command.headline}
+        titleId="cmd-title"
+        body={command.body}
+        points={command.outcomes}
+        more={detail ? undefined : { href: '/command', label: command.more }}
+        night
+      />
     </div>
 
     <div
       class="cmd__diagram"
       data-piece="flow-diagram"
+      data-enter
       data-flow={JSON.stringify({ sources: command.sources, agents: command.agents, outputs: command.outputs, core: command.core, feeds: command.feeds })}
       role="img"
       aria-label={command.diagramLabel}

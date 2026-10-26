@@ -1,0 +1,77 @@
+---
+// The body of a product's own page, under its section from the home page:
+// what it does, how it works, where it stands, and a way to start.
+import { productPage as p, products, contact, footer } from '../content/copy';
+import '../styles/screens/product.css';
+
+interface Props {
+  product: keyof typeof products;
+}
+const { product } = Astro.props;
+const d = products[product];
+const names = { occuralog: 'Occuralog', command: 'Occuris Command', echo: 'Occuris Echo' } as const;
+const others = (Object.keys(names) as (keyof typeof names)[]).filter((k) => k !== product);
+const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(contact.email)}&su=${encodeURIComponent(`${names[product]} pilot`)}`;
+---
+<section class="pp" aria-labelledby="pp-what">
+  <div class="wrap">
+    <div class="pp__block">
+      <h2 class="pp__heading" id="pp-what">{p.what}</h2>
+      <ul class="pp__what" role="list">
+        {d.what.map((w, i) => (
+          <li data-enter style={`--d:${i * 80}ms`}>
+            <h3>{w.t}</h3>
+            <p>{w.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="pp__block">
+      <h2 class="pp__heading">{p.how}</h2>
+      <ol class="pp__how" role="list">
+        {d.how.map((step, i) => (
+          <li data-enter style={`--d:${i * 80}ms`}>
+            <span class="pp__n">{String(i + 1).padStart(2, '0')}</span>
+            <span>{step}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="pp__block">
+      <h2 class="pp__heading">{p.stands}</h2>
+      <div class="pp__stands">
+        <div>
+          <p class="pp__label pp__label--now">{p.today}</p>
+          <ul role="list">{d.today.map((t) => <li>{t}</li>)}</ul>
+        </div>
+        <div>
+          <p class="pp__label">{p.next}</p>
+          <ul role="list">{d.next.map((t) => <li>{t}</li>)}</ul>
+        </div>
+      </div>
+      <p class="pp__note">{d.note}</p>
+    </div>
+
+    <div class="pp__cta">
+      <div>
+        <h2 class="pp__cta-heading">{p.ctaHeading}</h2>
+        <p>{p.ctaBody}</p>
+      </div>
+      <div class="pp__cta-actions">
+        <a class="btn btn--lg plausible-event-name=Email+Click" href={gmail} target="_blank" rel="noopener">{contact.email}<span class="sr-only"> {footer.newTab}</span></a>
+        <a class="pp__back" href="/">{p.back}</a>
+      </div>
+    </div>
+
+    <nav class="pp__others" aria-label={p.others}>
+      <p class="pp__label">{p.others}</p>
+      <ul role="list">
+        {others.map((k) => (
+          <li><a href={`/${k}`}>{names[k]}<span aria-hidden="true"> →</span></a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</section>

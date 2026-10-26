@@ -5,7 +5,7 @@ import '../styles/screens/nav.css';
 <a class="skip" href="#main">{nav.skip}</a>
 <header class="nav" data-theme="paper">
   <div class="wrap nav__inner">
-    <a class="nav__brand" href="#top" aria-label={nav.home}>
+    <a class="nav__brand" href="/#top" data-scroll aria-label={nav.home}>
       <img class="nav__logo nav__logo--ink" src="/logo-ink.svg" width="32" height="32" alt="" />
       <img class="nav__logo nav__logo--violet" src="/logo.svg" width="32" height="32" alt="" />
       <span class="nav__word">{nav.wordmark}</span>
@@ -13,10 +13,10 @@ import '../styles/screens/nav.css';
     <nav class="nav__links" aria-label={nav.label}>
       <ul>
         {nav.links.map((l) => (
-          <li><a href={l.href} data-scroll>{l.label}</a></li>
+          <li><a href={`/${l.href}`} data-scroll>{l.label}</a></li>
         ))}
       </ul>
     </nav>
-    <a class="btn nav__cta" href="#contact" data-scroll>{nav.cta}</a>
+    <a class="btn nav__cta" href="/#contact" data-scroll>{nav.cta}</a>
   </div>
 </header>

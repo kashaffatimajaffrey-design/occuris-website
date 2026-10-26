@@ -1,0 +1,16 @@
+---
+import { links, footer, nav } from '../content/copy';
+import '../styles/screens/footer.css';
+---
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <a class="foot__brand" href="/#top" aria-label={nav.home} data-scroll>
+      <img src="/logo-ink.svg" width="24" height="24" alt="" />
+    </a>
+    {links.github && <a href={links.github} target="_blank" rel="noopener" class="plausible-event-name=GitHub+Click">{footer.github}<span class="sr-only"> {footer.newTab}</span></a>}
+    {links.linkedin && <a href={links.linkedin} target="_blank" rel="noopener">{footer.linkedin}<span class="sr-only"> {footer.newTab}</span></a>}
+    {links.substack && <a href={links.substack} target="_blank" rel="noopener">{footer.substack}<span class="sr-only"> {footer.newTab}</span></a>}
+    <p class="foot__place">{footer.location}</p>
+    <p class="foot__copy">{footer.copyright}</p>
+  </div>
+</footer>

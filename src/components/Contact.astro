@@ -1,5 +1,5 @@
 ---
-import { proof, contact, links, footer, nav } from '../content/copy';
+import { proof, contact, footer } from '../content/copy';
 import '../styles/screens/contact.css';
 // The address opens a Gmail compose window in a new tab, which works for anyone
 // signed in to Gmail even without a desktop mail app; mailto is the fallback.
@@ -25,38 +25,35 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(contact.ema
       </ol>
     </div>
 
-    <div class="grid letter">
-      <div class="letter__pitch">
+    <div class="work">
+      <div class="work__head">
         <h3 class="letter__heading">{proof.workHeading}</h3>
         <p class="letter__intro">{proof.workIntro}</p>
-        <ul class="offers" role="list">
-          {proof.offers.map((o) => (
-            <li class="offer">
-              <h4 class="offer__title">{o.title}</h4>
-              <p class="offer__body">{o.body}</p>
-              <p class="offer__who"><span>{proof.forLabel}</span> {o.who}</p>
-            </li>
-          ))}
-        </ul>
-        <p class="letter__pilot">{proof.pilot2}</p>
-        <ul class="principles" role="list">
-          {proof.principles.map((p) => <li>{p}</li>)}
-        </ul>
       </div>
-      <div class="letter__contact">
-        <dl class="letter__lines">
-          <div class="letter__line">
-            <dt>{proof.contactLabels.email}</dt>
-            <dd>
-              <a class="big plausible-event-name=Email+Click" href={gmail} target="_blank" rel="noopener">{contact.email}<span class="sr-only"> {footer.newTab}</span></a>
-              <a class="line__alt plausible-event-name=Email+Click" href={mailto}>{proof.mailApp}</a>
-            </dd>
-          </div>
-          <div class="letter__line">
-            <dt>{proof.contactLabels.office}</dt>
-            <dd class="line__plain">{contact.office}</dd>
-          </div>
-        </dl>
+      <ul class="offers" role="list">
+        {proof.offers.map((o, i) => (
+          <li class="offer" data-enter style={`--d:${i * 90}ms`}>
+            <h4 class="offer__title">{o.title}</h4>
+            <p class="offer__body">{o.body}</p>
+            <p class="offer__who"><span>{proof.forLabel}</span> {o.who}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="letter__pilot">{proof.pilot2}</p>
+      <ul class="principles" role="list">
+        {proof.principles.map((p) => <li>{p}</li>)}
+      </ul>
+    </div>
+
+    <div class="reach">
+      <div class="reach__line">
+        <p class="reach__key">{proof.contactLabels.email}</p>
+        <a class="big plausible-event-name=Email+Click" href={gmail} target="_blank" rel="noopener">{contact.email}<span class="sr-only"> {footer.newTab}</span></a>
+        <a class="line__alt plausible-event-name=Email+Click" href={mailto}>{proof.mailApp}</a>
+      </div>
+      <div class="reach__line">
+        <p class="reach__key">{proof.contactLabels.office}</p>
+        <p class="line__plain">{contact.office}</p>
         <p class="letter__reply">{proof.reply}</p>
       </div>
     </div>
@@ -78,16 +75,4 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(contact.ema
     </ul>
   </div>
 
-  <footer class="foot">
-    <div class="wrap foot__inner">
-      <a class="foot__brand" href="#top" aria-label={nav.home} data-scroll>
-        <img src="/logo-ink.svg" width="24" height="24" alt="" />
-      </a>
-      {links.github && <a href={links.github} target="_blank" rel="noopener" class="plausible-event-name=GitHub+Click">{footer.github}<span class="sr-only"> {footer.newTab}</span></a>}
-      {links.linkedin && <a href={links.linkedin} target="_blank" rel="noopener">{footer.linkedin}<span class="sr-only"> {footer.newTab}</span></a>}
-      {links.substack && <a href={links.substack} target="_blank" rel="noopener">{footer.substack}<span class="sr-only"> {footer.newTab}</span></a>}
-      <p class="foot__place">{footer.location}</p>
-      <p class="foot__copy">{footer.copyright}</p>
-    </div>
-  </footer>
 </section>

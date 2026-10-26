@@ -7,50 +7,10 @@
   flex-direction: column;
 }
 .cmd__head {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--gutter);
-  align-items: end;
+  max-width: 640px;
 }
-.cmd__head .tag {
-  grid-column: 1 / -1;
-}
-.cmd__title {
-  grid-column: 1 / span 7;
-  font-size: var(--t-h1);
-  line-height: 1.02;
-  color: var(--paper);
-}
-.cmd__side {
-  grid-column: 8 / span 5;
-}
-.cmd__body {
-  color: var(--mist);
-  text-wrap: pretty;
-}
-.cmd__outcomes {
-  display: grid;
-  gap: 6px;
-  margin: var(--s3) 0 0;
-  padding: var(--s2) 0 0;
-  border-top: 1px solid var(--mist-30);
-  list-style: none;
-  font-size: var(--t-body);
-  line-height: 1.4;
-  color: var(--paper);
-}
-.cmd__outcomes li {
-  display: grid;
-  grid-template-columns: 18px 1fr;
-  align-items: baseline;
-}
-.cmd__outcomes li::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+.cmd__head .prod__points li::before {
   background: var(--amber);
-  transform: translateY(-2px);
 }
 
 /* ---------- the diagram ---------- */
@@ -226,13 +186,6 @@
 }
 
 @media (max-width: 959px) {
-  .cmd__title,
-  .cmd__side {
-    grid-column: 1 / -1;
-  }
-  .cmd__side {
-    margin-top: var(--s3);
-  }
   .log__now {
     grid-template-columns: 1fr;
     gap: 2px;

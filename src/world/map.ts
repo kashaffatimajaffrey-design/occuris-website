@@ -29,6 +29,8 @@ export interface MapOptions {
   labels: Record<string, string>;
   ambient?: boolean;
   interactive?: boolean;
+  /** Pulse this road once after load, so people discover they can click it */
+  hint?: number;
   onBreak?: (link: number) => void;
   onHeal?: (link: number) => void;
   onParsed?: (index: number) => void;
@@ -213,7 +215,8 @@ export function init(canvas: HTMLCanvasElement, opts: MapOptions): WorldMap {
   // ---------- layout ----------
   function size() {
     const rect = canvas.getBoundingClientRect();
-    ratio = Math.min(window.devicePixelRatio || 1, 2);
+    // Phones draw at 1.5x: sharp enough, and it holds the frame rate
+    ratio = Math.min(window.devicePixelRatio || 1, rect.width < 700 ? 1.5 : 2);
     W = Math.max(1, Math.round(rect.width));
     H = Math.max(1, Math.round(rect.height));
     canvas.width = Math.round(W * ratio);
@@ -224,13 +227,14 @@ export function init(canvas: HTMLCanvasElement, opts: MapOptions): WorldMap {
     fitT = Math.min((W * 0.94) / spanX, (H * 0.9) / spanY);
   }
 
-  function updateCamera(snap = false) {
+  function updateCamera(snap = false, dt = 1 / 60) {
     if (shot.follow) {
       const [fx, fy] = anchorOf(shot.follow)();
       shot.x = fx;
       shot.y = fy;
     }
-    const k = snap ? 1 : 0.06;
+    // Time-based easing: the same glide at 30 or 120 frames a second
+    const k = snap ? 1 : 1 - Math.exp(-dt * 3.4);
     view.x += (shot.x - view.x) * k;
     view.y += (shot.y - view.y) * k;
     view.zoom += (shot.zoom - view.zoom) * k;
@@ -352,6 +356,25 @@ export function init(canvas: HTMLCanvasElement, opts: MapOptions): WorldMap {
       road(DETOUR, shade(c.road, 0.92), cam.t * 0.62);
       road(DETOUR, c.violetSoft, cam.t * 0.5);
       road(DETOUR, c.violet, Math.max(1.5, cam.t * 0.08), [cam.t * 0.3, cam.t * 0.25]);
+    }
+    // The nudge: one road pulses twice, a little after the map appears
+    const HINT_AT = 1.8;
+    const HINT_FOR = 4;
+    if (opts.hint !== undefined && time > HINT_AT && time < HINT_AT + HINT_FOR && hover < 0 && !blocked.has(opts.hint)) {
+      const u = (time - HINT_AT) / HINT_FOR;
+      const a = 0.5 - 0.5 * Math.cos(u * Math.PI * 4);
+      g.globalAlpha = a * 0.85;
+      road(ROUTES[opts.hint], c.violet, Math.max(4, cam.t * 0.42));
+      const m = along(ROUTES[opts.hint], 0.5);
+      const [mx, my] = P(m.x, m.y);
+      const ring = ((u * 2) % 1) * cam.t * 1.6 + cam.t * 0.3;
+      g.globalAlpha = (1 - ((u * 2) % 1)) * 0.8;
+      g.strokeStyle = c.violet;
+      g.lineWidth = 2.5;
+      g.beginPath();
+      g.ellipse(mx, my, ring, ring * 0.58, 0, 0, Math.PI * 2);
+      g.stroke();
+      g.globalAlpha = 1;
     }
     // Hover highlight
     if (hover >= 0 && !blocked.has(hover)) road(ROUTES[hover], c.violet, Math.max(2, cam.t * 0.12), hover === 0 ? [4, 5] : undefined);
@@ -763,7 +786,7 @@ export function init(canvas: HTMLCanvasElement, opts: MapOptions): WorldMap {
       lastAmbient = time;
       say(ambientIndex++ % opts.messages.length);
     }
-    updateCamera();
+    updateCamera(false, dt);
   }
 
   // ---------- speech bubbles: message -> scan -> record ----------

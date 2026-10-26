@@ -16,7 +16,6 @@ export const links = {
   github: '',
   linkedin: 'https://www.linkedin.com/company/occurisai/',
   substack: 'https://kashaf00.substack.com/',
-  echoDemo: 'https://www.loom.com/share/6bd1cf3edd624f7abde12051eb732f79',
 };
 
 export const tagline =
@@ -91,16 +90,14 @@ export const messages = [
 // for the sample rows in section 15; confirm before launch.
 export const story = {
   label: 'One day in Karachi',
+  start: '06:58', // the clock before the first message
   skip: 'Skip to products', // shown on phones only
   hud: { messages: 'messages read', records: 'records', decisions: 'decisions' },
   without: 'Without Occuris',
   with: 'Occuris',
+  // The total for the whole day, shown when the story reaches its last beat
+  totals: { messages: 8, records: 8, decisions: 6 },
   beats: [
-    {
-      time: '06:58',
-      title: 'One day at a distributor in Karachi.',
-      body: 'Eight messages will arrive between breakfast and dinner, in Urdu, English and both at once. Each one hides a decision with a deadline. Scroll through the day with Occuris reading along.',
-    },
     {
       time: '07:42',
       who: 'Ahmed, dispatch',
@@ -118,14 +115,6 @@ export const story = {
       decision: 'Customs hold on 3 containers. Line stops in 4 days. Alternate: 120 units at Warehouse B.',
     },
     {
-      time: '11:30',
-      who: 'Supplier, Lahore',
-      msg: 2,
-      title: 'Copper just went up 12%.',
-      without: 'The supplier mentions it in passing. Nobody reprices the next order.',
-      decision: 'Supplier risk: copper wire price up 12% at Lahore supplier. 2 alternates found within 8%.',
-    },
-    {
       time: '14:05',
       who: 'Store',
       msg: 3,
@@ -134,35 +123,11 @@ export const story = {
       decision: 'Warehouse A below reorder point: 30 cartons left, 7 days of demand. Reorder 400 raised for approval.',
     },
     {
-      time: '16:40',
-      who: 'Driver',
-      msg: 4,
-      title: 'The Hyderabad bypass is closed.',
-      without: 'The driver says it at a petrol stop. Head office finds out when the truck does not arrive.',
-      decision: 'Transit delay, Hyderabad bypass closed. ETA +4 hours. No line impact. Rerouted.',
-    },
-    {
-      time: '18:10',
-      who: 'Supplier, Dubai',
-      msg: 5,
-      title: 'The spare part is in the air.',
-      without: 'Ten days, says Dubai. Fourteen days of life left in the old unit, says nobody.',
-      decision: 'Inventory: generator spare arrives in 10 days. Current unit end-of-life in 14. Margin: 4 days.',
-    },
-    {
-      time: '19:30',
-      who: 'Receiving',
-      msg: 6,
-      title: 'Two pallets arrive damaged.',
-      without: 'The photos sit in a chat. The claim window closes quietly.',
-      decision: 'Compliance: 2 damaged pallets logged with photos. Claim window closes in 48 hours.',
-    },
-    {
       time: '20:05',
       who: 'Warehouse A',
       msg: 7,
       title: 'Eight messages. Eight records. Six decisions.',
-      body: 'The last truck of cement leaves for Sukkur on time. Nobody re-typed anything, and nothing left the building. Every one of those six decisions is logged with the message that caused it. Tomorrow it starts again at 7:42.',
+      body: 'That was three of them. By evening the last truck of cement leaves for Sukkur on time, nobody has re-typed anything, and nothing has left the building. Every one of those six decisions is logged with the message that caused it.',
     },
   ],
 };
@@ -188,6 +153,12 @@ export const occuralog = {
   eyebrow: 'Occuralog',
   headline: 'No ERP required.',
   body: 'Occuralog turns the Urdu-English WhatsApp messages your team already sends into structured records that systems like SAP never see.',
+  points: [
+    'Reads the WhatsApp export as it is, in Roman Urdu, English or both.',
+    'Turns every message into a timestamped, classified record.',
+    'Builds a timeline per order and flags the delays still open.',
+  ],
+  more: 'More on Occuralog',
   recordOpen: 'See a sample record',
   recordClose: 'Hide the sample record',
   recordTitle: 'Record 0001, parsed from WhatsApp',
@@ -213,6 +184,7 @@ export const command = {
   eyebrow: 'Occuris Command',
   headline: 'Six agents watching your supply chain so you don’t have to.',
   body: 'Procurement, inventory, supplier risk, compliance, forecasting and reporting, reasoning across your data in real time, and flagging risk before it becomes a delay.',
+  more: 'More on Command',
   outcomes: [
     'Flags the late shipment before the line stops.',
     'Finds two alternate suppliers when a price jumps.',
@@ -246,7 +218,7 @@ export const echo = {
     'Reports what actually happened, not what it intended to do.',
     '57 of 57 known-answer tests passed, with zero silent failures.',
   ],
-  demo: 'Watch the 90-second demo',
+  more: 'More on Echo',
   listening: 'Listening',
   heard: 'Heard',
   said: '“Approve the 400 carton reorder and tell Ahmed it ships Thursday.”',
@@ -305,11 +277,6 @@ export const proof = {
       body: 'Voice-first front ends for your own tools, with approval gates on every action. For staff who cannot type, or whose hands are busy.',
       who: 'Banks, hospitals, NGOs, government',
     },
-    {
-      title: 'Private AI infrastructure',
-      body: 'Local models, tenant isolation, tamper-evident logs and audit trails. For data that cannot leave the building.',
-      who: 'Anyone regulated',
-    },
   ],
   pilot2: 'Engagements start with a two-week scoped pilot on your data.',
   principles: ['Human in the loop', 'Every action logged', 'Model-agnostic: local, Claude or others', 'You own the code'],
@@ -323,6 +290,65 @@ export const proof = {
     { name: 'Rizwan Saleem', role: 'Co-founder, Testing and Engineering', bio: 'Testing and engineering on Occuris Command.', linkedin: 'https://www.linkedin.com/in/rizwan-saleem-451b18258/' },
   ],
   teamLink: 'LinkedIn',
+};
+
+// One page per product: what it does, how it works, where it stands today.
+// Everything here is true of the code in the product's repository today.
+export const productPage = {
+  what: 'What it does',
+  how: 'How it works',
+  stands: 'Where it stands',
+  today: 'Runs today',
+  next: 'Next',
+  ctaHeading: 'Try it on your own data',
+  ctaBody: 'Engagements start with a two-week scoped pilot, on your servers, with you owning the code.',
+  back: 'Back to the overview',
+  others: 'The other two parts',
+};
+
+export const products = {
+  occuralog: {
+    title: 'Occuralog: WhatsApp messages to records · Occuris AI',
+    description: 'Occuralog reads the Urdu-English WhatsApp messages your team already sends and turns them into timestamped records and per-order timelines.',
+    what: [
+      { t: 'Reads the chat you already have', d: 'A WhatsApp group export, as it is: Roman Urdu, English or both, malformed lines included.' },
+      { t: 'Turns messages into records', d: 'Each message becomes a timestamped, classified event, so “truck late hai” is logged as a delay.' },
+      { t: 'Builds a timeline per order', d: 'Events are put in order for each order, and delays that are still open are flagged.' },
+      { t: 'Says when it is unsure', d: 'A message the rules cannot place is kept as unknown. It is never guessed.' },
+    ],
+    how: ['Export the WhatsApp chat', 'Parse: normalise the format, keep the messy lines', 'Extract: rules turn text into events', 'Timeline: order events per order, flag open delays'],
+    today: ['WhatsApp export parser', 'Per-order timelines with open-delay detection', 'A Python library that runs on your machine; no service to host'],
+    next: ['Excel parser', 'A durable event store', 'Plain-language questions over the log'],
+    note: 'Built in public. No accuracy figure is published until there is labelled data to measure it against.',
+  },
+  command: {
+    title: 'Occuris Command: six agents on your supply chain · Occuris AI',
+    description: 'Occuris Command watches stock, lead times, end-of-life parts and supplier risk across your data, and raises alerts, approvals and reports.',
+    what: [
+      { t: 'Six agents on your data', d: 'Procurement, inventory, supplier risk, compliance, forecasting and reporting, each watching its part of the chain.' },
+      { t: 'Tied to your bill of materials', d: 'Stock, lead times and end-of-life parts are checked against your BOM, so a risk is tied to what it would stop.' },
+      { t: 'Answers you can check', d: 'Ask in plain language. Every answer names the model that produced it, and a fallback answer says so.' },
+      { t: 'Your model, your servers', d: 'A local model by default, or Claude when you choose. Nothing has to leave the building.' },
+    ],
+    how: ['Connect: ERP exports, spreadsheets and Occuralog records', 'Watch: checks for lifecycle, risk and scenarios', 'Decide: alerts, approvals and reports, with the source behind each'],
+    today: ['The Command Deck and its backend, running locally', 'Multi-agent chat over a local model, Claude or Groq', 'BOM storage and an evaluation harness'],
+    next: ['Live news, weather and supplier feeds', 'Storage moves to Postgres', 'Alerts streamed to each company separately'],
+    note: 'Piloted for six months with NKE Technica, an electronics import and export business.',
+  },
+  echo: {
+    title: 'Occuris Echo: approve it with your voice · Occuris AI',
+    description: 'Occuris Echo is a voice-first agent: one sentence acts across email, calendar, Slack and spreadsheets, and nothing is sent without your yes.',
+    what: [
+      { t: 'One sentence, four apps', d: 'Email, calendar, Slack and a spreadsheet ledger, from one spoken request.' },
+      { t: 'Asks instead of guessing', d: 'Two contacts called Patel, or “next Thursday” said on a Thursday: Echo asks one question.' },
+      { t: 'Waits for your yes', d: 'Email and Slack wait for your confirmation, and Echo never deletes anything.' },
+      { t: 'Tells you what really happened', d: 'The read-back comes from what the apps reported, so a partial failure is said out loud.' },
+    ],
+    how: ['Listen', 'Rules first: contacts, dates and corrections; a model only for what rules cannot settle', 'Gate: confirm anything irreversible', 'Act once: a repeated request is caught, not sent twice', 'Echo back what actually happened'],
+    today: ['Runs against Gmail, Google Calendar, Slack and Sheets', 'In-memory copies of all four apps for safe testing', 'An interface built to WCAG 2.2 targets'],
+    next: ['Speech recognition on the device', 'Sign-in for each user', 'Testing with disabled users'],
+    note: '57 of 57 known-answer cases pass with zero silent failures. With the rules switched off, the same agent makes three silent mistakes, which is why the rules come first.',
+  },
 };
 
 export const footer = {

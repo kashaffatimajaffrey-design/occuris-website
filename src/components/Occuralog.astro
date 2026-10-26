@@ -1,5 +1,5 @@
 ---
-import Headline from './Headline.astro';
+import ProductIntro from './ProductIntro.astro';
 import { occuralog, fallbackAlt } from '../content/copy';
 import { sampleRows } from '../content/sample-rows';
 import '../styles/screens/occuralog.css';
@@ -18,38 +18,54 @@ const record: [string, string, boolean?][] = [
 const avg = sampleRows.reduce((s, r) => s + Number(r.confidence), 0) / sampleRows.length;
 const statusLine = occuralog.status.replace('{n}', String(sampleRows.length)).replace('{avg}', avg.toFixed(2));
 const quiet = (v: string) => v === '0' || v === 'n/a';
+
+interface Props {
+  /** On the product's own page: no "More" link, and the sample record is shown */
+  detail?: boolean;
+}
+const { detail = false } = Astro.props;
 ---
 <section class="screen occ" id="occuralog" data-screen="paper" aria-labelledby="occ-title">
   <div class="wrap grid occ__grid">
     <div class="occ__text">
-      <p class="tag"><span class="tag__ring" aria-hidden="true"></span>{occuralog.eyebrow}</p>
-      <Headline id="occ-title" lines={occuralog.headline} class="occ__title" />
-      <p class="occ__body" data-reveal>{occuralog.body}</p>
-      <button
-        class="occ__toggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="occ-record"
-        data-record-toggle
-        data-open={occuralog.recordOpen}
-        data-close={occuralog.recordClose}
+      <ProductIntro
+        tag={occuralog.eyebrow}
+        headline={occuralog.headline}
+        titleId="occ-title"
+        body={occuralog.body}
+        points={occuralog.points}
+        more={detail ? undefined : { href: '/occuralog', label: occuralog.more }}
       >
-        <span class="occ__toggle-icon" aria-hidden="true"></span><span data-label>{occuralog.recordOpen}</span>
-      </button>
-      <div class="record" id="occ-record" hidden>
-        <p class="record__title mono">{occuralog.recordTitle}</p>
-        <dl class="record__list mono">
-          {record.map(([key, value, ur], i) => (
-            <div class="record__row" style={`--i:${i}`}>
-              <dt>{key}</dt>
-              <dd lang={ur ? 'ur' : undefined}>{value}</dd>
+        {detail && (
+          <Fragment>
+            <button
+              class="occ__toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="occ-record"
+              data-record-toggle
+              data-open={occuralog.recordOpen}
+              data-close={occuralog.recordClose}
+            >
+              <span class="occ__toggle-icon" aria-hidden="true"></span><span data-label>{occuralog.recordOpen}</span>
+            </button>
+            <div class="record" id="occ-record" hidden>
+              <p class="record__title mono">{occuralog.recordTitle}</p>
+              <dl class="record__list mono">
+                {record.map(([key, value, ur], i) => (
+                  <div class="record__row" style={`--i:${i}`}>
+                    <dt>{key}</dt>
+                    <dd lang={ur ? 'ur' : undefined}>{value}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
-          ))}
-        </dl>
-      </div>
+          </Fragment>
+        )}
+      </ProductIntro>
     </div>
 
-    <div class="occ__frame stage" data-piece="flow">
+    <div class="occ__frame stage" data-piece="flow" data-enter>
       <canvas role="img" aria-label={occuralog.canvasLabel}></canvas>
       <img class="fallback" src="/fallbacks/flowfield.png" alt={fallbackAlt.flow} loading="lazy" decoding="async" />
       <div class="occ__table-wrap" data-table>

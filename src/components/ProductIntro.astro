@@ -1,0 +1,32 @@
+---
+// The text half of every product section, so Occuralog, Command and Echo
+// always read the same way: name, headline, what it is, three things it does,
+// and where to read more.
+import Headline from './Headline.astro';
+
+interface Props {
+  tag: string;
+  headline: string;
+  titleId: string;
+  body: string;
+  points: string[];
+  /** Link to the product's own page; left out on that page itself */
+  more?: { href: string; label: string };
+  night?: boolean;
+}
+const { tag, headline, titleId, body, points, more, night = false } = Astro.props;
+---
+<div class:list={['prod', { 'prod--night': night }]}>
+  <p class="tag"><span class="tag__ring" aria-hidden="true"></span>{tag}</p>
+  <Headline id={titleId} lines={headline} class="prod__title" />
+  <p class="prod__body" data-reveal>{body}</p>
+  <ul class="prod__points" role="list">
+    {points.map((p) => <li data-reveal>{p}</li>)}
+  </ul>
+  <slot />
+  {more && (
+    <a class="prod__more" href={more.href}>
+      {more.label}<span class="prod__arrow" aria-hidden="true">→</span>
+    </a>
+  )}
+</div>

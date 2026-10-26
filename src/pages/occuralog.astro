@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import Occuralog from '../components/Occuralog.astro';
+import ProductPage from '../components/ProductPage.astro';
+import { products } from '../content/copy';
+const d = products.occuralog;
+---
+<Base title={d.title} description={d.description} path="/occuralog">
+  <Occuralog detail />
+  <ProductPage product="occuralog" />
+</Base>

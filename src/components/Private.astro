@@ -13,7 +13,7 @@ import '../styles/screens/private.css';
       <p class="priv__models mono">{privateScreen.models}</p>
     </div>
 
-    <div class="priv__frame stage" data-piece="building" data-labels={JSON.stringify(privateScreen.scene)}>
+    <div class="priv__frame stage" data-piece="building" data-enter data-labels={JSON.stringify(privateScreen.scene)}>
       <p class="priv__label mono" aria-hidden="true">{privateScreen.frameLabel}</p>
       <span class="priv__tick priv__tick--tl" aria-hidden="true"></span>
       <span class="priv__tick priv__tick--tr" aria-hidden="true"></span>

@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import Echo from '../components/Echo.astro';
+import ProductPage from '../components/ProductPage.astro';
+import { products } from '../content/copy';
+const d = products.echo;
+---
+<Base title={d.title} description={d.description} path="/echo">
+  <Echo detail />
+  <ProductPage product="echo" />
+</Base>

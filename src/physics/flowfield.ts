@@ -15,10 +15,15 @@ export interface FlowOptions {
   /** Where the particles should line up, in canvas CSS pixels. */
   targets?: (count: number, w: number, h: number) => Target[];
   onFormed?: () => void;
+  /** How far toward the rows the particles sit before forming (0 = loose, 1 = rows) */
+  base?: number;
+  /** How long the final landing takes */
+  formMs?: number;
 }
 
 export interface Flow extends Piece {
   readonly count: number;
+  readonly state: { mode: string; haveTargets: boolean };
   form(): void;
   scatter(): void;
 }
@@ -114,6 +119,9 @@ export function init(canvas: HTMLCanvasElement, opts: FlowOptions = {}): Flow {
   const ty = new Float32Array(N);
 
   let mode: 'field' | 'forming' | 'formed' = 'field';
+  const base = opts.base ?? 0;
+  const formMs = opts.formMs ?? FORM_MS;
+  let haveTargets = false;
   let formStart = 0;
   let mouse = { x: -1e4, y: -1e4 };
   let clock = 0;
@@ -170,11 +178,36 @@ export function init(canvas: HTMLCanvasElement, opts: FlowOptions = {}): Flow {
 
     let e = 0;
     if (mode !== 'field') {
-      e = easeInOutCubic(clamp((clock - formStart) / FORM_MS, 0, 1));
+      e = easeInOutCubic(clamp((clock - formStart) / formMs, 0, 1));
       if (mode === 'forming' && e >= 1) {
         mode = 'formed';
         opts.onFormed?.();
       }
+    }
+
+    // Half-formed: each particle circles its own spot in the table, pushed by
+    // the same noise field, so a still frame already reads as rows. Landing
+    // shrinks the circle to nothing.
+    if (haveTargets && base > 0) {
+      const reach = (1 - base) * 64 * (1 - e);
+      for (let i = 0; i < N; i++) {
+        const a = noise(tx[i] * 0.011, ty[i] * 0.011, z * 3) * Math.PI * 4;
+        const r = reach * (0.35 + 0.65 * Math.abs(noise(ty[i] * 0.02, tx[i] * 0.02, z * 2 + 7)) * 2);
+        let x = tx[i] + Math.cos(a) * r;
+        let y = ty[i] + Math.sin(a) * r * 0.6;
+        const mx = x - mouse.x;
+        const my = y - mouse.y;
+        const d2 = mx * mx + my * my;
+        if (d2 < PUSH_R * PUSH_R) {
+          const d = Math.sqrt(d2) || 1;
+          const f = 24 * (1 - d / PUSH_R) * (1 - e);
+          x += (mx / d) * f;
+          y += (my / d) * f;
+        }
+        dx[i] = x;
+        dy[i] = y;
+      }
+      return;
     }
     for (let i = 0; i < N; i++) {
       dx[i] = lerp(fx[i], tx[i], e);
@@ -199,13 +232,19 @@ export function init(canvas: HTMLCanvasElement, opts: FlowOptions = {}): Flow {
     g.globalAlpha = 1;
   }
 
-  function form() {
-    if (mode !== 'field') return;
+  function loadTargets() {
     const targets = opts.targets?.(N, W, H) ?? defaultTargets(N, W);
+    if (!targets.length) return;
     for (let i = 0; i < N; i++) {
       tx[i] = targets[i % targets.length].x;
       ty[i] = targets[i % targets.length].y;
     }
+    haveTargets = true;
+  }
+
+  function form() {
+    if (mode !== 'field') return;
+    loadTargets();
     mode = 'forming';
     formStart = clock;
   }
@@ -227,8 +266,12 @@ export function init(canvas: HTMLCanvasElement, opts: FlowOptions = {}): Flow {
   canvas.addEventListener('pointermove', onMove);
   canvas.addEventListener('pointerleave', onLeave);
 
-  const ro = new ResizeObserver(() => size(false));
+  const ro = new ResizeObserver(() => {
+    size(false);
+    if (haveTargets) loadTargets();
+  });
   size(true);
+  if (base > 0) loadTargets();
   ro.observe(canvas);
 
   const loop = frameLoop(step, render);
@@ -236,6 +279,9 @@ export function init(canvas: HTMLCanvasElement, opts: FlowOptions = {}): Flow {
 
   return {
     count: N,
+    get state() {
+      return { mode, haveTargets };
+    },
     form,
     scatter,
     pause: () => loop.stop(),
