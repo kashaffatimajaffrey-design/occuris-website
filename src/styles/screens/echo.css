@@ -1,0 +1,222 @@
+.echo {
+  display: flex;
+  align-items: center;
+}
+.echo__grid {
+  align-items: center;
+  row-gap: var(--s6);
+}
+.echo__text {
+  grid-column: 1 / span 6;
+}
+.echo__title {
+  font-size: var(--t-h1);
+  line-height: 1.02;
+}
+.echo__body {
+  margin-top: var(--s3);
+  max-width: 32em;
+  color: var(--ink-70);
+  text-wrap: pretty;
+}
+.echo__points {
+  display: grid;
+  gap: var(--s1);
+  margin: var(--s4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.echo__points li {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  align-items: baseline;
+  font-size: var(--t-ui);
+  line-height: 1.5;
+}
+.echo__points li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--violet);
+  transform: translateY(-2px);
+}
+.echo__demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: var(--s4);
+  font-weight: 500;
+}
+.echo__play {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+}
+.echo__play::before {
+  content: '';
+  margin-left: 2px;
+  border-left: 8px solid currentColor;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+
+/* ---------- the transcript card ---------- */
+.echo__card {
+  grid-column: 8 / span 5;
+  margin: 0;
+  padding: var(--s3);
+  border: 1px solid var(--ink-20);
+  border-radius: 12px;
+  background: var(--white);
+  font-family: var(--font-mono);
+}
+.echo__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: var(--s2);
+  border-bottom: 1px solid var(--ink-12);
+  font-size: var(--t-micro);
+  color: var(--ink-60);
+}
+.echo__mic {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--violet);
+}
+.echo__mic::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 6px;
+  height: 10px;
+  margin-left: -3px;
+  border-radius: 3px;
+  background: var(--paper);
+}
+.echo__mic::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 11px;
+  width: 10px;
+  height: 7px;
+  margin-left: -5px;
+  border: 1.5px solid var(--paper);
+  border-top: 0;
+  border-radius: 0 0 6px 6px;
+}
+.echo__wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+}
+.echo__wave i {
+  width: 3px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--violet);
+  transition: height 200ms;
+}
+.echo__card.is-listening .echo__wave i {
+  animation: wave 0.9s ease-in-out infinite;
+}
+.echo__wave i:nth-child(2) { animation-delay: 0.1s; }
+.echo__wave i:nth-child(3) { animation-delay: 0.25s; }
+.echo__wave i:nth-child(4) { animation-delay: 0.05s; }
+.echo__wave i:nth-child(5) { animation-delay: 0.3s; }
+.echo__wave i:nth-child(6) { animation-delay: 0.15s; }
+.echo__wave i:nth-child(7) { animation-delay: 0.2s; }
+@keyframes wave {
+  0%,
+  100% {
+    height: 4px;
+  }
+  50% {
+    height: 18px;
+  }
+}
+.echo__said {
+  margin-top: var(--s3);
+  font-size: var(--t-small);
+  line-height: 1.55;
+  color: var(--ink);
+}
+.echo__steps {
+  display: grid;
+  gap: 10px;
+  margin: var(--s3) 0 0;
+  padding: var(--s2) 0 0;
+  border-top: 1px dashed var(--ink-20);
+  list-style: none;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.echo__step {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 10px;
+}
+.echo__time {
+  color: var(--ink-60);
+}
+.echo__step--wait .echo__what {
+  color: var(--ink);
+  font-weight: 400;
+}
+.echo__amber {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--amber);
+  vertical-align: 0;
+}
+.echo__card.is-done .echo__amber {
+  animation: amber-pulse 1.6s ease-in-out infinite;
+}
+@keyframes amber-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Played once by main.ts: listen, the sentence lands, then each step */
+.js .echo__card[data-armed] .echo__said,
+.js .echo__card[data-armed] .echo__step {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 360ms var(--ease-out),
+    transform 360ms var(--ease-out);
+}
+.js .echo__card .is-shown {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+@media (max-width: 959px) {
+  .echo__text,
+  .echo__card {
+    grid-column: 1 / -1;
+  }
+  .echo__step {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .echo__card .echo__wave i,
+  .echo__card .echo__amber {
+    animation: none !important;
+  }
+}

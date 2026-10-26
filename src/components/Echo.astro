@@ -1,0 +1,39 @@
+---
+// Occuris Echo: one spoken sentence, what Echo did about it, and the approval
+// it waits for. The card plays once when it scrolls into view (main.ts).
+import Headline from './Headline.astro';
+import { echo, links, footer } from '../content/copy';
+import '../styles/screens/echo.css';
+---
+<section class="screen echo" id="echo" data-screen="paper" aria-labelledby="echo-title">
+  <div class="wrap grid echo__grid">
+    <div class="echo__text">
+      <p class="tag"><span class="tag__ring" aria-hidden="true"></span>{echo.eyebrow}</p>
+      <Headline id="echo-title" lines={echo.headline} class="echo__title" />
+      <p class="echo__body" data-reveal>{echo.body}</p>
+      <ul class="echo__points" role="list">
+        {echo.points.map((p) => <li data-reveal>{p}</li>)}
+      </ul>
+      <a class="echo__demo" href={links.echoDemo} target="_blank" rel="noopener">
+        <span class="echo__play" aria-hidden="true"></span>{echo.demo}<span class="sr-only"> {footer.newTab}</span>
+      </a>
+    </div>
+
+    <figure class="echo__card" data-echo role="img" aria-label={echo.cardLabel}>
+      <div class="echo__bar" aria-hidden="true">
+        <span class="echo__mic"></span>
+        <span class="echo__wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="echo__state" data-heard={echo.heard}>{echo.listening}</span>
+      </div>
+      <p class="echo__said" aria-hidden="true">{echo.said}</p>
+      <ol class="echo__steps" aria-hidden="true">
+        {echo.steps.map((s) => (
+          <li class:list={['echo__step', { 'echo__step--wait': s.wait }]}>
+            <span class="echo__time">{s.time}</span>
+            <span class="echo__what">{s.wait && <span class="echo__amber" />}{s.text}</span>
+          </li>
+        ))}
+      </ol>
+    </figure>
+  </div>
+</section>
