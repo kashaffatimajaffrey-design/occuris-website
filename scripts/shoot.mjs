@@ -3,7 +3,7 @@
 import { chromium } from 'playwright';
 const base = process.argv[2] ?? 'http://localhost:4322/';
 const only = process.argv[3];
-const screens = ['top', 'occuralog', 'command', 'private', 'contact'];
+const screens = ['top', 'system', 'occuralog', 'command', 'echo', 'private', 'contact'];
 const sizes = [
   { name: 'desktop', width: 1440, height: 900 },
   { name: 'phone', width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 },

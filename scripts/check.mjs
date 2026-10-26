@@ -98,6 +98,27 @@ const browser = await chromium.launch({ channel: process.env.PW_CHANNEL || 'msed
   check('contact: email opens Gmail compose, mail-app fallback, no WhatsApp number', /to=occurisai%40gmail.com/.test(links.gmail ?? '') && (links.mail ?? '').startsWith('mailto:occurisai@gmail.com') && links.wa === 0 && links.copyButtons === 0);
   check('links: no link without an address', links.dead === 0);
   check('contact: office reads Bahria University, Karachi', links.office);
+
+  // Change list (Oct 26): new screens, nav, words buyers scan for, no doubled text
+  const cl = await page.evaluate(() => {
+    const text = document.body.innerText;
+    const words = ['SIEM', 'Splunk', 'QRadar', 'threat hunting', 'accessibility', 'audit trails', 'tenant isolation', 'Model-agnostic', 'Human in the loop', 'You own the code', 'two-week scoped pilot', '57 of 57', 'Reply within one working day'];
+    return {
+      nav: [...document.querySelectorAll('.nav__links a')].map((a) => a.textContent.trim()).join(','),
+      sections: ['system', 'echo'].every((id) => !!document.getElementById(id)),
+      demo: document.querySelector('.echo__demo')?.getAttribute('href') ?? '',
+      missing: words.filter((w) => !text.toLowerCase().includes(w.toLowerCase())),
+      doubled: (text.match(/Compliance: 2 damaged pallets logged with photos/g) ?? []).length,
+      title: document.title,
+      footer: document.querySelector('.foot')?.innerText ?? '',
+    };
+  });
+  check('changes: nav is System, Occuralog, Command, Echo, Private, Contact', cl.nav === 'System,Occuralog,Command,Echo,Private,Contact', cl.nav);
+  check('changes: System and Echo screens exist; demo links to Loom', cl.sections && cl.demo.startsWith('https://www.loom.com/'));
+  check('changes: every word buyers scan for is on the page', cl.missing.length === 0, cl.missing.join(', '));
+  check('changes: story decision is not printed twice (F2)', cl.doubled <= 2, `${cl.doubled} copies incl. Command log`);
+  check('changes: title names operations, supply chain and security (F12)', /supply chain and security/.test(cl.title), cl.title);
+  check('changes: footer has Substack and Karachi, Pakistan (F10)', /Substack/.test(cl.footer) && /Karachi, Pakistan/.test(cl.footer));
   check('no page errors on desktop', errors.length === 0, errors.join(' | '));
   await page.close();
 }
