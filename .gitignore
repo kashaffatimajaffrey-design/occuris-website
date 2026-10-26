@@ -6,3 +6,4 @@ screenshots/
 
 # The PRD export has internal details (phone numbers, plans); keep it out of a public repo
 docs/PRD.txt
+.wrangler/

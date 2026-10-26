@@ -242,8 +242,8 @@ export const proof = {
   teamHeading: 'Team',
   team: [
     { name: 'Kashaf Fatima', role: 'Founder and Lead AI Engineer', linkedin: 'https://www.linkedin.com/in/kashaf-fatima-jaffri67' },
-    { name: 'Muntaha Jabbar', role: 'Co-founder, AI and QA', linkedin: '' }, // Muntaha adds the URL
-    { name: 'Rizwan Saleem', role: 'Co-founder, Brand and Engineering', linkedin: '' }, // Rizwan adds the URL
+    { name: 'Muntaha Jabbar', role: 'Co-founder, AI and QA', linkedin: 'https://www.linkedin.com/in/muntaha-j-abbasi-' },
+    { name: 'Rizwan Saleem', role: 'Co-founder, Brand and Engineering', linkedin: 'https://www.linkedin.com/in/rizwan-saleem' },
   ],
   teamLink: 'LinkedIn',
 };

@@ -19,23 +19,21 @@ pnpm build && pnpm preview   # http://localhost:4322
   - `building.ts`: the Private-by-design building
 - `src/physics/flowfield.ts`: the Occuralog particles that become the table
 - `src/styles/tokens.css`: colours, type, spacing. No hex values anywhere else in the CSS.
-- `public/_headers`: Cloudflare Pages caching and security headers.
+- `public/_headers`: caching and security headers, honoured by Cloudflare.
 
-## Deploy on Cloudflare Pages
+## Deploy on Cloudflare (Workers)
 
-1. Push this repo to GitHub.
-2. In Cloudflare: Workers & Pages → Create → Pages → Connect to Git → pick the repo.
-3. Build settings:
-   - Framework preset: Astro
-   - Build command: `pnpm build`
-   - Build output directory: `dist`
-4. Environment variables (Production and Preview):
+The site is plain static files served by Workers static assets. `wrangler.jsonc` points Cloudflare at `./dist`.
+
+1. In Cloudflare: Workers & Pages → Create → Import a repository → pick `occuris-website`.
+2. Build command: `pnpm run build`. Deploy command: `npx wrangler deploy`.
+3. Advanced settings → Build variables:
    - `NODE_VERSION` = `22`
    - `PNPM_VERSION` = `11.9.0`
-   - `SITE_URL` = the address people will visit, e.g. `https://occuris-website.pages.dev` until the domain is live, then `https://occuris.ai`. It sets the canonical URL, the link-preview image, robots.txt and the sitemap.
-5. Save and deploy. Every push to `main` redeploys; every pull request gets its own preview URL.
+   - `SITE_URL` = the address people will visit, for example `https://occuris-website.YOUR-SUBDOMAIN.workers.dev` until the domain is live, then `https://occuris.ai`. It sets the canonical URL, the link-preview image, robots.txt and the sitemap.
+4. Deploy. Every push to `main` redeploys.
 
-For the custom domain: Pages project → Custom domains → add `occuris.ai`, then change `SITE_URL` to match and redeploy.
+For the custom domain: the Worker → Settings → Domains & Routes → add `occuris.ai`, then change `SITE_URL` to match and redeploy.
 
 ## Checks
 
@@ -47,4 +45,3 @@ node scripts/shoot.mjs       # screenshots of each screen at 1440x900 and 390x84
 node scripts/story.mjs       # screenshot of every story beat
 node scripts/assets.mjs      # regenerate public/fallbacks/*.png and public/og.png
 ```
-
