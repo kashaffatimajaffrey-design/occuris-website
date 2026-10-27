@@ -1,0 +1,109 @@
+<!doctype html>
+<!-- LinkedIn cover for the Occuris AI page, 1128 x 191 (rendered at 2x by
+     brand/render.mjs). The port scene is cropped from a generated
+     illustration, its purples turned to harbour slate, and faded into the paper. -->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: Fraunces; src: url('../public/fonts/fraunces-variable.woff2') format('woff2'); font-weight: 300 600; }
+  @font-face { font-family: Mono; src: url('../public/fonts/jetbrains-mono-regular.woff2') format('woff2'); }
+  :root { --ink: #141A22; --quiet: #6E675B; }
+  html, body { margin: 0; }
+  .cover { position: relative; width: 1128px; height: 191px; overflow: hidden; background: var(--paper, #EFE9DE); }
+  canvas {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 191px;
+    /* the scene comes out of the paper instead of starting at an edge */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22%), linear-gradient(to bottom, transparent 0, #000 14%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent 0, #000 22%), linear-gradient(to bottom, transparent 0, #000 14%);
+    mask-composite: intersect;
+  }
+  /* LinkedIn puts the page logo over the bottom-left corner, so the words stay high */
+  .words { position: absolute; left: 56px; top: 32px; }
+  .eyebrow {
+    display: flex; align-items: center; gap: 8px;
+    font: 10.5px/1 Mono, monospace; letter-spacing: 0.18em; color: var(--ink);
+  }
+  .eyebrow img { width: 18px; height: 18px; }
+  h1 {
+    margin: 16px 0 0;
+    font: 400 34px/1.08 Fraunces, Georgia, serif;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+  }
+  h1 span { color: var(--quiet); }
+</style>
+</head>
+<body>
+<div class="cover" id="cover">
+  <canvas id="scene"></canvas>
+  <div class="words">
+    <div class="eyebrow"><img src="occuris-mark.svg" alt="">OCCURIS AI</div>
+    <h1>Your operations run on WhatsApp.<br><span>Your decisions shouldn’t.</span></h1>
+  </div>
+</div>
+<script>
+  // The crop of the source, in its own pixels
+  const CROP = { x: 600, y: 170, w: 1323, h: 550 };
+  const SCALE = 2; // rendered at 2x
+
+  // purple (hue 235-300) becomes harbour slate at the same lightness
+  function slate(d) {
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      const l = (max + min) / 2;
+      const c = max - min;
+      if (c < 0.06) continue;
+      const s = c / (1 - Math.abs(2 * l - 1));
+      let h = max === r ? ((g - b) / c) % 6 : max === g ? (b - r) / c + 2 : (r - g) / c + 4;
+      h = (h * 60 + 360) % 360;
+      if (h < 232 || h > 305 || s < 0.07) continue;
+      // hsl(214, 18%, l)
+      const S = 0.18, H = 214 / 60;
+      const C = (1 - Math.abs(2 * l - 1)) * S;
+      const X = C * (1 - Math.abs((H % 2) - 1));
+      const m = l - C / 2;
+      const [rr, gg, bb] = H < 4 ? [0, X, C] : [X, 0, C];
+      d[i] = (rr + m) * 255;
+      d[i + 1] = (gg + m) * 255;
+      d[i + 2] = (bb + m) * 255;
+    }
+  }
+
+  window.ready = new Promise((done) => {
+    const img = new Image();
+    img.onload = () => {
+      // the paper of the illustration becomes the paper of the whole banner
+      const probe = document.createElement('canvas');
+      probe.width = 60; probe.height = 60;
+      const pc = probe.getContext('2d');
+      pc.drawImage(img, 60, 60, 60, 60, 0, 0, 60, 60);
+      const p = pc.getImageData(0, 0, 60, 60).data;
+      let rs = 0, gs = 0, bs = 0;
+      for (let i = 0; i < p.length; i += 4) { rs += p[i]; gs += p[i + 1]; bs += p[i + 2]; }
+      const n = p.length / 4;
+      document.getElementById('cover').style.setProperty('--paper', `rgb(${rs / n | 0}, ${gs / n | 0}, ${bs / n | 0})`);
+
+      const cv = document.getElementById('scene');
+      const cssW = Math.round((CROP.w * 191) / CROP.h);
+      cv.style.width = `${cssW}px`;
+      cv.width = cssW * SCALE;
+      cv.height = 191 * SCALE;
+      const ctx = cv.getContext('2d');
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, CROP.x, CROP.y, CROP.w, CROP.h, 0, 0, cv.width, cv.height);
+      const data = ctx.getImageData(0, 0, cv.width, cv.height);
+      slate(data.data);
+      ctx.putImageData(data, 0, 0);
+      done();
+    };
+    img.src = window.PORT;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!-- The Occuris mark: a chamfered O, the loop from a message to a decision,
+     with one amber segment, the one thing that needs your attention.
+     Redrawn from the generated sketch in brand/source/logo-boards.webp.
+     The two cuts are true gaps, so the mark sits on any background. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Occuris">
+  <defs>
+    <!-- outer 64 x 78, chamfer 17; inner 36 x 52, chamfer 10 -->
+    <path id="ring" fill-rule="evenodd" d="M35 11 H65 L82 28 V72 L65 89 H35 L18 72 V28 Z M42 24 H58 L68 34 V66 L58 76 H42 L32 66 V34 Z" />
+    <clipPath id="seg"><path d="M50 50 L82 2 H110 V58 H50 Z" /></clipPath>
+    <mask id="cuts" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+      <rect width="100" height="100" fill="#fff" />
+      <path d="M50 50 L82 2 M50 58 H100" stroke="#000" stroke-width="3" />
+    </mask>
+  </defs>
+  <g mask="url(#cuts)">
+    <use href="#ring" fill="#F3EFE7" />
+    <use href="#ring" fill="#E39A1B" clip-path="url(#seg)" />
+  </g>
+</svg>

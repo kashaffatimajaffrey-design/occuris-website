@@ -1,0 +1,24 @@
+<!doctype html>
+<!-- The LinkedIn logo: the Occuris mark on warm paper, 400 x 400 (rendered at 2x). -->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; background: #F3EFE7; }
+  .tile { display: grid; place-items: center; width: 400px; height: 400px; background: #F3EFE7; }
+  .tile img { width: 300px; height: 300px; }
+  .tile--ink { background: #141A22; }
+</style>
+</head>
+<body>
+<div class="tile" id="tile"><img src="occuris-mark.svg" alt=""></div>
+<script>
+  // ?ink shows the dark version: the paper ring on harbour ink
+  if (location.search.includes('ink')) {
+    const t = document.getElementById('tile');
+    t.classList.add('tile--ink');
+    t.querySelector('img').src = 'occuris-mark-paper.svg';
+  }
+</script>
+</body>
+</html>
