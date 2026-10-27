@@ -37,6 +37,12 @@
     color: var(--ink);
   }
   h1 span { color: var(--quiet); }
+  /* The 4:1 banner: LinkedIn shows only a thin strip through the middle in some
+     places, so the words sit dead centre and the small label goes (the logo
+     is right next to the banner anyway). */
+  .cover.is-tall .words { top: 50%; transform: translateY(-50%); }
+  .cover.is-tall .eyebrow { display: none; }
+  .cover.is-tall h1 { margin: 0; }
 </style>
 </head>
 <body>
@@ -56,6 +62,7 @@
   cover.style.setProperty('--w', `${W}px`);
   cover.style.setProperty('--h', `${H}px`);
   cover.style.setProperty('--k', W / H > 5 ? 1 : 1.6);
+  cover.classList.toggle('is-tall', W / H <= 5);
   // The crop of the source, in its own pixels: a taller slice for the taller banner
   const CROP = W / H > 5 ? { x: 600, y: 170, w: 1323, h: 550 } : { x: 560, y: 70, w: 1363, h: 720 };
   const SCALE = 2; // rendered at 2x
