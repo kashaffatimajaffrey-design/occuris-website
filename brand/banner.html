@@ -18,9 +18,9 @@
     top: 0;
     height: 100%;
     /* the scene comes out of the paper instead of starting at an edge */
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22%), linear-gradient(to bottom, transparent 0, #000 14%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fade, 22%)), linear-gradient(to bottom, transparent 0, #000 var(--fade-top, 14%));
     -webkit-mask-composite: source-in;
-    mask-image: linear-gradient(to right, transparent 0, #000 22%), linear-gradient(to bottom, transparent 0, #000 14%);
+    mask-image: linear-gradient(to right, transparent 0, #000 var(--fade, 22%)), linear-gradient(to bottom, transparent 0, #000 var(--fade-top, 14%));
     mask-composite: intersect;
   }
   /* LinkedIn puts the page logo over the bottom-left corner, so the words stay high */
@@ -43,6 +43,13 @@
   .cover.is-tall .words { top: 50%; transform: translateY(-50%); }
   .cover.is-tall .eyebrow { display: none; }
   .cover.is-tall h1 { margin: 0; }
+  /* The 1128 x 191 banner as LinkedIn shows it: the page logo covers the
+     bottom-left (about the first 215px, lower half), so the words start right
+     of it, centred, and the whole port scene fits on the right. */
+  .cover.is-wide .words { left: 250px; top: 50%; transform: translateY(-50%); }
+  .cover.is-wide .eyebrow { display: none; }
+  .cover.is-wide canvas { --fade: 12%; --fade-top: 4%; }
+  .cover.is-wide h1 { margin: 0; font-size: 31px; }
 </style>
 </head>
 <body>
@@ -63,8 +70,9 @@
   cover.style.setProperty('--h', `${H}px`);
   cover.style.setProperty('--k', W / H > 5 ? 1 : 1.6);
   cover.classList.toggle('is-tall', W / H <= 5);
+  cover.classList.toggle('is-wide', W / H > 5);
   // The crop of the source, in its own pixels: a taller slice for the taller banner
-  const CROP = W / H > 5 ? { x: 600, y: 170, w: 1323, h: 550 } : { x: 560, y: 70, w: 1363, h: 720 };
+  const CROP = W / H > 5 ? { x: 470, y: 40, w: 1453, h: 777 } : { x: 560, y: 70, w: 1363, h: 720 };
   const SCALE = 2; // rendered at 2x
 
   // purple (hue 235-300) becomes harbour slate at the same lightness
