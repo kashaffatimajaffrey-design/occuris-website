@@ -1,5 +1,6 @@
 <!doctype html>
-<!-- LinkedIn cover for the Occuris AI page, 1128 x 191 (rendered at 2x by
+<!-- LinkedIn cover for the Occuris AI page: 1128 x 191, or 1584 x 396 with
+     ?w=1584&h=396 (rendered at 2x by
      brand/render.mjs). The port scene is cropped from a generated
      illustration, its purples turned to harbour slate, and faded into the paper. -->
 <html>
@@ -10,12 +11,12 @@
   @font-face { font-family: Mono; src: url('../public/fonts/jetbrains-mono-regular.woff2') format('woff2'); }
   :root { --ink: #141A22; --quiet: #6E675B; }
   html, body { margin: 0; }
-  .cover { position: relative; width: 1128px; height: 191px; overflow: hidden; background: var(--paper, #EFE9DE); }
+  .cover { --k: 1; position: relative; width: var(--w, 1128px); height: var(--h, 191px); overflow: hidden; background: var(--paper, #EFE9DE); }
   canvas {
     position: absolute;
     right: 0;
     top: 0;
-    height: 191px;
+    height: 100%;
     /* the scene comes out of the paper instead of starting at an edge */
     -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22%), linear-gradient(to bottom, transparent 0, #000 14%);
     -webkit-mask-composite: source-in;
@@ -23,15 +24,15 @@
     mask-composite: intersect;
   }
   /* LinkedIn puts the page logo over the bottom-left corner, so the words stay high */
-  .words { position: absolute; left: 56px; top: 32px; }
+  .words { position: absolute; left: calc(56px * var(--k)); top: calc(32px * var(--k)); }
   .eyebrow {
     display: flex; align-items: center; gap: 8px;
-    font: 10.5px/1 Mono, monospace; letter-spacing: 0.18em; color: var(--ink);
+    font: calc(10.5px * var(--k))/1 Mono, monospace; letter-spacing: 0.18em; color: var(--ink);
   }
-  .eyebrow img { width: 18px; height: 18px; }
+  .eyebrow img { width: calc(18px * var(--k)); height: calc(18px * var(--k)); }
   h1 {
-    margin: 16px 0 0;
-    font: 400 34px/1.08 Fraunces, Georgia, serif;
+    margin: calc(16px * var(--k)) 0 0;
+    font: 400 calc(34px * var(--k))/1.08 Fraunces, Georgia, serif;
     letter-spacing: -0.018em;
     color: var(--ink);
   }
@@ -47,8 +48,16 @@
   </div>
 </div>
 <script>
-  // The crop of the source, in its own pixels
-  const CROP = { x: 600, y: 170, w: 1323, h: 550 };
+  // Size from the address: the long strip by default, 4:1 with ?w=1584&h=396
+  const q = new URLSearchParams(location.search);
+  const W = Number(q.get('w')) || 1128;
+  const H = Number(q.get('h')) || 191;
+  const cover = document.getElementById('cover');
+  cover.style.setProperty('--w', `${W}px`);
+  cover.style.setProperty('--h', `${H}px`);
+  cover.style.setProperty('--k', W / H > 5 ? 1 : 1.6);
+  // The crop of the source, in its own pixels: a taller slice for the taller banner
+  const CROP = W / H > 5 ? { x: 600, y: 170, w: 1323, h: 550 } : { x: 560, y: 70, w: 1363, h: 720 };
   const SCALE = 2; // rendered at 2x
 
   // purple (hue 235-300) becomes harbour slate at the same lightness
@@ -90,10 +99,10 @@
       document.getElementById('cover').style.setProperty('--paper', `rgb(${rs / n | 0}, ${gs / n | 0}, ${bs / n | 0})`);
 
       const cv = document.getElementById('scene');
-      const cssW = Math.round((CROP.w * 191) / CROP.h);
+      const cssW = Math.round((CROP.w * H) / CROP.h);
       cv.style.width = `${cssW}px`;
       cv.width = cssW * SCALE;
-      cv.height = 191 * SCALE;
+      cv.height = H * SCALE;
       const ctx = cv.getContext('2d');
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, CROP.x, CROP.y, CROP.w, CROP.h, 0, 0, cv.width, cv.height);

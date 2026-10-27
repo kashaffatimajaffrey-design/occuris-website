@@ -11,6 +11,7 @@ const port = `data:image/webp;base64,${readFileSync(path.join(here, 'source/port
 const browser = await chromium.launch({ channel: 'msedge' });
 const shots = [
   { src: 'banner.html', out: 'linkedin-banner.png', w: 1128, h: 191 },
+  { src: 'banner.html?w=1584&h=396', out: 'linkedin-banner-4x1.png', w: 1584, h: 396 },
   { src: 'logo.html', out: 'linkedin-logo.png', w: 400, h: 400 },
   { src: 'logo.html?ink', out: 'linkedin-logo-dark.png', w: 400, h: 400 },
 ];
